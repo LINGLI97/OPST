@@ -1,26 +1,12 @@
-#include <sdsl/wavelet_trees.hpp>
-#include <iostream>
-#include <random> // For std::mt19937 and std::uniform_int_distribution
-#include <cstdlib> // For std::exit
 
+#include "Successor.h"
 using namespace sdsl;
 using namespace std;
+
 
 //#define VERBOSE
 #define NA -1
 //Derived wavelet tree
-class DerivedWTInt : public wt_int<> {
-public:
-
-    using wt_int<>::wt_int;
-
-    int rank_bit( value_type c, int i,size_type offset) const;
-
-    int select_bit( value_type c, int i, const node_type& node) const;
-
-
-};
-
 
 
 int DerivedWTInt::rank_bit( value_type c, int i, size_type offset) const{
@@ -187,19 +173,19 @@ int successorNV(int_vector<>& w, int a, int b) {
 }
 
 
-/*
-int successor(int_vector<> iv, sdsl::wt_int<>::size_type &size, sdsl::wt_int<>::size_type &sigma, int a , int b){
+int successor(int_vector<> w, sdsl::wt_int<>::size_type &size, sdsl::wt_int<>::size_type &sigma, int a , int b){
 
-    if ((double) size < 5 * log(sigma) ){
-//        successorNV();
-
+    if ((double) b -a < RANGE_THRESHOLD  || (double) size < TIMES_THRESHOLD * log(sigma) ){
+        return successorNV(w,a,b);
     } else{
-
-//        successorWT();
+        DerivedWTInt wt;
+        construct_im(wt, w);
+        return successorWT(wt,wt.root(), a-1, b);
     }
 }
 
-*/
+
+
 
 void run_test(int numsample){
     std::random_device rd; // Obtain a random number from hardware

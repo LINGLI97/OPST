@@ -1,7 +1,5 @@
-#include <sdsl/wavelet_trees.hpp>
-#include <iostream>
-#include <random> // For std::mt19937 and std::uniform_int_distribution
-#include <cstdlib> // For std::exit
+
+#include "Predecessor.h"
 
 using namespace sdsl;
 using namespace std;
@@ -9,18 +7,6 @@ using namespace std;
 //#define VERBOSE
 #define NA -1
 //Derived wavelet tree
-class DerivedWTInt : public wt_int<> {
-public:
-
-    using wt_int<>::wt_int;
-
-    int rank_bit( value_type c, int i,size_type offset) const;
-
-    int select_bit( value_type c, int i, const node_type& node) const;
-
-
-};
-
 
 
 int DerivedWTInt::rank_bit( value_type c, int i, size_type offset) const{
@@ -187,19 +173,19 @@ int predecessorNV(int_vector<>& w, int a, int b) {
 }
 
 
-/*
-int predecessor(int_vector<> iv, sdsl::wt_int<>::size_type &size, sdsl::wt_int<>::size_type &sigma, int a , int b){
+int predecessor(int_vector<> w,int a , int b){
 
-    if ((double) size < 5 * log(sigma) ){
-//        predecessorNV();
+
+    if ((double) b -a < RANGE_THRESHOLD  || (double) size < TIMES_THRESHOLD * log(sigma) ){
+
+        return predecessorNV(w, a, b);
 
     } else{
 
-//        predecessorWT();
+        return predecessorWT(wt,wt.root(), a-1, b);
     }
 }
 
-*/
 
 void run_test(int numsample){
 
@@ -273,21 +259,22 @@ void run_test(int numsample){
 int main(int argc, char* argv[])
 {
 
-    run_test(1000000);
+//    run_test(1000000);
 
-    /*
-    int_vector<> iv = {1, 0, 0, 3, 3, 1, 0, 2};
+
+//    int_vector<> iv = {1, 0, 0, 3, 3, 1, 0, 2};
 
     // 通过 input
 
 
-
+    string iv = "10033102";
 //    int_vector<> iv = {1, 1, 4, 1, 1, 2, 3, 2};
 
 
     // construct DerivedWT
+
     DerivedWTInt wt;
-    construct_im(wt, iv);
+    construct(wt,"input.txt", 0);
 
 
 
@@ -350,11 +337,11 @@ int main(int argc, char* argv[])
 
 //    cout<<"predecessor got by Wavelet tree = "<<iv[predecessorWT(wt,wt.root(),a-1, b)]<<endl;
 
-    int predecessorIndex = predecessorNV(iv,a,b);
+//    int predecessorIndex = predecessorNV(iv,a,b);
 
-    std::cout << "The index of the predecessor got by Wavelet tree = " << predecessorIndex << std::endl;
+//    std::cout << "The index of the predecessor got by Wavelet tree = " << predecessorIndex << std::endl;
 
-*/
+
 
 
 }
