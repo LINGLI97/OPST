@@ -45,6 +45,8 @@ private:
     int n; // the length of w
     int num;
     map<uint64_t, stNode*> leaves;
+    map<uint64_t, pair<int, int>> int2ps;
+
     DerivedWTInt wt;
     int sigma;
     uint64_t terminate_label;
@@ -53,6 +55,7 @@ private:
 
 public:
     explicit OPST( int_vector<> & W );
+    void int2psInsert(int cur_i, int a, int b);
 
 
     int Max(const sdsl::wt_int<>::node_type& u, int a, int b);
@@ -67,8 +70,8 @@ public:
     int successorWT(const sdsl::wt_int<>::node_type& u, int a, int b);
 
 
-    pair<int, int>  LastCode(int a, int b);
-    uint64_t LastCodeInt(int a, int b);
+//    pair<int, int>  LastCode(int a, int b);
+//    uint64_t LastCodeInt(int a, int b);
 
     uint64_t LastCodeInt(int cur_i, int a, int b);
     pair<int, int>  LastCode( int cur_i, int a, int b);
@@ -88,6 +91,9 @@ public:
 //    void trimST( int * ME );
     void printLeaves();
     void deleteTree(stNode* node);
+    void exportSuffixTreeToDot(stNode * root, const std::string& filename,bool suf);
+    void generateDot(stNode* node, std::ofstream& dotFile, bool suf);
+
     ~OPST();
 };
 

@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <sdsl/wavelet_trees.hpp>
+#include <fstream>
 
 
 //#include "Successor.h"
@@ -58,12 +59,31 @@ void readfile(const string &filename, int_vector<>& input_seq_vec){
 //
 //}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int main(int argc, char *argv[])
 {
 //    int_vector<> iv = {1, 0, 0, 3, 3, 1, 0, 2};
 
     cmdline::parser parser;
-    parser.add<string>("filepath", 'f', "the path to input file", false, "2");
+    parser.add<string>("filepath", 'f', "the path to input file", false, "discretization.txt");
     parser.parse_check(argc, argv);
     string filename = parser.get<string>("filepath");
     cout<< "filename is "<<filename<<endl;

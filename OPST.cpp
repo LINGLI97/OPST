@@ -9,6 +9,8 @@
 
 #include "OPST.h"
 
+//#define INT2PS
+//#define CHECK
 
 using namespace std;
 //using namespace sdsl;
@@ -356,7 +358,7 @@ int OPST::successorNV(int a, int b) {
 
 
 //LastCode wrapper
-
+/*
 pair<int, int> OPST:: LastCode(int a , int b){
 
     assert(make_pair(predecessorNV(a, b), successorNV(a,b)) == make_pair(predecessorWT(wt.root(), a-1, b-1), successorWT(wt.root(), a-1, b-1)));
@@ -398,6 +400,7 @@ uint64_t OPST::LastCodeInt(int a, int b) {
 
     if (b == n){
         assert(a== n -1);
+
         return pair2int(make_pair(n,n), n) +1;
         // return the integer (n+1)(n+2) +1 indicating $
     } else{
@@ -409,9 +412,14 @@ uint64_t OPST::LastCodeInt(int a, int b) {
 
 }
 
+
+ */
 pair<int, int> OPST:: LastCode(int cur_i, int a , int b){
 
+#ifdef CHECK
     assert(make_pair(predecessorNV(a, b), successorNV(a,b)) == make_pair(predecessorWT(wt.root(), a-1, b-1), successorWT(wt.root(), a-1, b-1)));
+
+#endif
     if ((double) b -a < RANGE_THRESHOLD  || (double) n < SiZE_THRESHOLD * log(sigma) ){
         int predecessor_local = predecessorNV(a, b);
         int successor_local =  successorNV(a,b);
@@ -454,18 +462,120 @@ uint64_t OPST::LastCodeInt(int cur_i, int a, int b) {
 ////        }
 //        cout<<"a = "<<a<<endl;
 //        cout<<"b = "<<b<<endl;
+#ifdef CHECK
+        assert(pair2int(make_pair(n,n), n) +1 == terminate_label);
 
+#endif
         return pair2int(make_pair(n,n), n) +1;
         // return the integer (n+1)(n+2) +1 indicating $
     } else{
-
+#ifdef CHECK
+        if (pair2int(LastCode, n) > terminate_label){
+            cout<<LastCode.first<<","<<LastCode.second<<endl;
+            cout<<pair2int(LastCode, n)<<endl;
+            cout<<terminate_label<<endl;
+        }
+        assert(pair2int(LastCode, n) < terminate_label);
+#endif
         pair<int, int> LastCode;
         LastCode = this->LastCode(cur_i,a, b);
+
+
         return pair2int(LastCode, n);
     }
 
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+void OPST::generateDot(stNode* node, std::ofstream& dotFile, bool suf) {
+    if (!node) return;
+
+    // 对于每个子节点，输出一条边的描述
+    stNode** children = node->allChild();
+    if (children != NULL){
+        int numChildren = node->numChild(); // 获取子节点的数量
+        for (int i = 0; i < numChildren; ++i) {
+            dotFile << "\"" << node << "\" -> \"" << children[i] << "\" [label=\"" << int2ps[children[i]->getLabel()].first<<" , "<<int2ps[children[i]->getLabel()].second << "\"];\n";
+
+            generateDot(children[i], dotFile, suf);
+
+        }
+    }
+    if (suf){
+        if (node->getSLink()!=NULL){
+            dotFile << "\"" << node << "\" -> \"" << node->getSLink() << "\" [label=\"" << "" << "\",color=\"red\"];\n";
+        }
+
+    }
+
+
+
+}
+
+void OPST::exportSuffixTreeToDot(stNode * node, const std::string& filename,bool suf) {
+    std::ofstream dotFile(filename);
+    if (!dotFile.is_open()) {
+        std::cerr << "Unable to open file for writing: " << filename << std::endl;
+        return;
+    }
+
+    // 开始DOT文件
+    dotFile << "digraph SuffixTree {\n";
+    dotFile << "node [shape=ellipse, style=filled, fillcolor=lightgrey];\n";
+    dotFile << "edge [color=black];\n";
+    dotFile << "graph [nodesep=0.5, ranksep=1, splines=polyline];\n";
+
+
+
+    // 生成并写入节点和边的描述
+    generateDot(node, dotFile,suf);
+
+    // 结束DOT文件
+    dotFile << "}\n";
+    dotFile.close();
+}
+
+
+
+
+void OPST::int2psInsert(int cur_i, int a, int b){
+
+
+    uint64_t i;
+    pair<int, int> ps;
+    if (b==n){
+         i = LastCodeInt(cur_i,a, b);
+         ps = make_pair(-2,-2);
+    } else{
+
+        i = LastCodeInt(cur_i,a, b);
+        ps = LastCode(cur_i,a, b);
+    }
+
+    auto it = this->int2ps.find( i );
+    if ( it == this->int2ps.end() )
+    {
+        this->int2ps.insert({i,ps});
+    }
+    else
+    {
+        assert(it->second.first == ps.first);
+        assert(it->second.second == ps.second);
+
+    }
+
+}
 
 
 
@@ -477,9 +587,11 @@ OPST::OPST(  int_vector<> & w )
     construct_im(wt,w);
     sigma = wt.sigma;
     //set the value of terminate_label
-    terminate_label = ((uint64_t)this->n + 1) * ((uint64_t)this->n + 2) + 1;
+    terminate_label = (uint64_t)(this->n + 1) * (uint64_t)(this->n + 2) + 1;
     cout<<"Sigma of input = "<<sigma<<endl;
-    cout<<"Input size n = "<<wt.size()<<endl;
+    cout<<"Input size wt.size() = "<<wt.size()<<endl;
+    cout<<"Input size this->n = "<<wt.size()<<endl;
+
     cout<<"terminate_label $ = " << terminate_label<<endl;
 //    cout<< this->n<<endl;
 
@@ -497,7 +609,6 @@ OPST::OPST(  int_vector<> & w )
     for ( int i = 0; i < this->n; i++ )
     {
 
-//        cout<<"i = " << i<<endl;
 
 //        cout<<"Outside The depth of u: "<<u->getDepth()<<endl;
 //        cout<<"Outside LastCode: "<<LastCode(i,i,i + d).first<<","<<LastCode(i, i, i + d).second<<endl;
@@ -508,7 +619,10 @@ OPST::OPST(  int_vector<> & w )
 //
 //        cout<<"LastCodeInt: "<<LastCodeInt(i, i, i + d)<<endl;
         while (((i+d) < this -> n) && (d == u->getDepth()) && (u->getChild(LastCodeInt(i, i, i + d)) != NULL)) {
-//            cout<<"Inside1 The depth of u: "<<u->getDepth()<<endl;
+#ifdef INT2PS
+            int2psInsert(i, i, i + d);
+#endif
+//            cout<<"i = " << i<<" ; Inside1 The depth of u: "<<u->getDepth()<<endl;
 //            cout<<"Inside1 LastCode: "<<LastCodeInt(i,i,i + d)<<endl;
 
             u = u->getChild(LastCodeInt(i,i, i + d));
@@ -537,7 +651,7 @@ OPST::OPST(  int_vector<> & w )
 //            cout<<"(P,S)2: "<<LastCode(i ,i , i + d).first<<" , "<<LastCode(i ,i , i + d).second<<endl;
 
             while ((i + d < this->n) && (u->getStart() +d < this->n) && (d < u->getDepth()) && (LastCode(u->getStart() , u->getStart(), u->getStart() + d) == LastCode(i ,i , i + d))) {
-//                cout<<"Inside3 d = "<<d <<";"<<"The depth of u: "<<u->getDepth()<<endl;
+//                cout<<"i = " << i<<" ; Inside3 d = "<<d <<";"<<"The depth of u: "<<u->getDepth()<<endl;
 //                cout<<"Inside3 LastCode: "<<LastCodeInt(i ,i , i + d)<<" "<<LastCodeInt(i , u->getStart(), u->getStart() + d)<<endl;
                 d = d + 1;
 
@@ -565,8 +679,13 @@ OPST::OPST(  int_vector<> & w )
         }
         u = u->getSLink();
 //        d = u->getSLink()->getDepth();
-        d = max( d-1, 0 );
+        d = u->getDepth();
+//        d = max( d-1, 0 );
     }
+#ifdef INT2PS
+    exportSuffixTreeToDot(root,"pic_nosufL", false);
+    exportSuffixTreeToDot(root,"pic_sufL", true);
+#endif
     cout<<"The number of middle_implicit_max appeared: "<<middle_implicit_max<<endl;
 
 }
@@ -676,6 +795,10 @@ void OPST::ComputeSuffixLink( stNode * u )
 
 //        cout<<u->getStart()+1<<","<<u->getStart() + v->getDepth() + 1<<endl;
 //        cout<<LastCodeInt(u->getStart()+1, u->getStart()+1, u->getStart() + v->getDepth() + 1)<<endl;
+
+#ifdef INT2PS
+        int2psInsert(u->getStart()+1, u->getStart()+1, u->getStart() + v->getDepth() + 1);
+#endif
         v = v->getChild( LastCodeInt(u->getStart()+1, u->getStart()+1, u->getStart() + v->getDepth() + 1) );
 //        v = v->getChild( LastCodeLnt(v->getDepth(), u->getStart() + v->getDepth() + 1) );
 
@@ -697,15 +820,22 @@ stNode * OPST::createNode(stNode * u, int d )
 //    cout<<LastCodeInt(cur_i, i, i+p->getDepth())<<endl;
 //    cout<<i<<" , "<<i+d<<endl;
 //    cout<<LastCodeInt(i, i, i+d)<<endl;
+#ifdef INT2PS
 
-    stNode * v = new stNode( i, d, LastCodeInt(i,i, i+p->getDepth()));
-    v->addChild( u, LastCodeInt(i, i, i+d));
+    int2psInsert(i,i, i+p->getDepth());
+    int2psInsert(i,i, i+d);
+#endif
+    uint64_t v_label = LastCodeInt(i,i, i+p->getDepth());
+    uint64_t u_label = LastCodeInt(i, i, i+d);
+
+    stNode * v = new stNode( i, d, v_label);
+    v->addChild( u, u_label);
 //    u->setParent( v );
 
 
 //    cout<<i<<" , "<<i+p->getDepth()<<endl;
 //    cout<<LastCodeInt(i, i, i+p->getDepth())<<endl;
-    p->addChild( v, LastCodeInt(i, i, i+ p->getDepth()) );
+    p->addChild( v, v_label);
 //	v->setParent( p );
     return v;
 }
@@ -738,8 +868,8 @@ void OPST::createLeaf( int i, stNode * u, int d )
     // (n+2)(n+1)+1 denotes $
 //    cout<<"Leaf: "<<LastCodeInt(i, i, i+d)<<endl;
 //    cout<<i<<" "<<i+d<<endl;
-
-    stNode *leaf  = new stNode(i, this->n-i +1, LastCodeInt(i, i, i+d)) ;
+    uint64_t leaf_label = LastCodeInt(i, i, i+d);
+    stNode *leaf  = new stNode(i, this->n-i +1, leaf_label) ;
     assert(i == leaf->getStart());
 //    cout<<"Create a leaf, depth: "<<this->n-i +1<< " label: "<< LastCodeInt(i, i, i+d) <<endl;
 //    cout<<"leaf range: "<<leaf->getStart()<<" "<<leaf->getStart() +d <<endl;
@@ -748,9 +878,11 @@ void OPST::createLeaf( int i, stNode * u, int d )
 //    cout<<leaf->getStart()<<" , "<<leaf->getStart() +d<<endl;
 //    cout<<LastCodeInt(leaf->getStart() , leaf->getStart(), leaf->getStart()+d)<<endl;
 
-    u->addChild( leaf, LastCodeInt(leaf->getStart() , leaf->getStart(), leaf->getStart()+d));
-
-
+    u->addChild( leaf, leaf_label);
+#ifdef INT2PS
+    int2psInsert(leaf->getStart() , leaf->getStart(), leaf->getStart()+d);
+    int2psInsert(i,i, i+d);
+#endif
 //	leaf->setParent(u);
 }
 

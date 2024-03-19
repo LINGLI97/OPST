@@ -89,7 +89,7 @@ void stNode::addChild( stNode * childNode, uint64_t l)
     auto it = this->child.find( l );
     if ( it == this->child.end() )
     {
-        pair <int, stNode*> insertChild( l, childNode );
+        pair <uint64_t , stNode*> insertChild( l, childNode );
         this->child.insert( insertChild );
     }
     else
@@ -108,7 +108,7 @@ void stNode::addLeaf( int i , uint64_t terminate_label)
         stNode * leaf = new stNode( i, this->depth+1, terminate_label );
         leaf->parent = this;
         leaf->Occ.push_back( i );
-        pair<int, stNode*> insertLeaf( terminate_label, leaf );
+        pair<uint64_t , stNode*> insertLeaf( terminate_label, leaf );
         this->child.insert( insertLeaf );
     }
     else
