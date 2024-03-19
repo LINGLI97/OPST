@@ -34,7 +34,7 @@ We can visulize the suffix tree via Graphviz by setting:
 #define INT2PS
 ```
 and then 
-dot -Tpdf pic_nosufL -o suffix_tree_nosuf.pdf
+dot -Tpdf pic_nosufL -o suffix_tree_nosuf.pdf  
 dot -Tpdf pic_sufL -o suffix_tree_suf.pdf
 
 
