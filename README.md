@@ -10,12 +10,13 @@ g++ -std=c++11 -DNDEBUG Predecessor.cpp -o Predecessor -I~/include -L~/lib -lsds
 ```
 
 ## compile and run
-After installing sdsl, you may need to change the include and lib paths in Makefile to your own paths. 
+After installing sdsl, you may need to change the include and lib paths in Makefile to your <span style="color: red;">OWN</span> paths. 
 ```bash 
 ./run.sh
 ```
 
 It will run on ecg_1_to_40.txt_merged20.txt ~ ecg_1_to_40.txt_merged100.txt, correpsonding to 20 to 100 MB files. 
+
 
 
 
