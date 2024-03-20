@@ -22,22 +22,36 @@ It will run on ecg_1_to_40.txt_merged20.txt ~ ecg_1_to_40.txt_merged100.txt, cor
 ## Tips
 We can print the detailed information by setting:
 ```cpp
-#define VERBOSE
+-DVERBOSE
 ```
 We do some safe checks by setting:
 ```cpp
-#define CHECK
+-DCHECK
 ```
 
 We can visulize the suffix tree via Graphviz by setting:
 ```cpp
-#define INT2PS
+-DINT2PS
 ```
 and then 
+```bash 
 dot -Tpdf pic_nosufL -o suffix_tree_nosuf.pdf  
 dot -Tpdf pic_sufL -o suffix_tree_suf.pdf
+```
+
+
+
+Using unordered_dense from [here](https://github.com/martinus/unordered_dense/tree/main) by setting the following flag. Otherwise, it will utilize the standard unordered map.
+```cpp
+-DUNORDERED_DENSE
+```
+
+
+
+
 
 
 The time curve with increasing the file size from 1MB to 20MB:
 
 ![time](./timevsSize.jpg)
+
