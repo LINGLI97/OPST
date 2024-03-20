@@ -61,7 +61,7 @@ private:
 
 public:
     explicit OPST( int_vector<> & w, int rangeThreshold, int sizeThreshold);
-    void int2psInsert(int cur_i, int a, int b);
+    void int2psInsert(int a, int b);
 
 
     int Max(const sdsl::wt_int<>::node_type& u, int a, int b);
@@ -79,8 +79,8 @@ public:
 //    pair<int, int>  LastCode(int a, int b);
 //    uint64_t LastCodeInt(int a, int b);
 
-    uint64_t LastCodeInt(int cur_i, int a, int b);
-    pair<int, int>  LastCode( int cur_i, int a, int b);
+    uint64_t LastCodeInt(int a, int b);
+    pair<int, int>  LastCode( int a, int b);
 
 
 

@@ -32,7 +32,7 @@ We do some safe checks by setting:
 
 We can visulize the suffix tree via Graphviz by setting:
 ```cpp
--DINT2PS
+-VISUALIZATION
 ```
 and then 
 ```bash 

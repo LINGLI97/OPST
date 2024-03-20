@@ -175,6 +175,7 @@ stNode::~stNode()
 stNode::~stNode()
 {
     // Check if this node is not the root (has a parent)
+    cout<<"Delete the node"<<endl;
     if (this->parent != nullptr)
     {
         // Find this node in the parent's child map
@@ -182,13 +183,16 @@ stNode::~stNode()
         if (it != this->parent->child.end())
         {
             // Erase this node from the parent's child map
+            cout<< "this->parent->label and this->parent->depth are "<<this->parent->label<< " "<<this->parent->depth<<endl;
+            cout<<"this->parent->child.erase(it);"<<it->second->label<<endl;
             this->parent->child.erase(it);
         }
 
         // If parent's child map is empty after erasing, delete the parent
         if (this->parent->child.empty())
         {
-            std::cout << "delete " << this->parent << std::endl;
+
+            std::cout << "delete " << this->parent->label<< " "<<this->parent->depth <<std::endl;
             delete this->parent;
         }
     }
@@ -196,8 +200,10 @@ stNode::~stNode()
     // Delete all child nodes
     for (auto it = this->child.begin(); it != this->child.end(); )
     {
-        std::cout << "delete " << it->second << std::endl;
+        std::cout << "delete " << it->second->label<<" "<<it->second->depth<< std::endl;
+        cout<<it->second->label<<" "<<it->second->depth<<endl;
         delete it->second; // Delete child node
+        cout<<it->second->label<<" "<<it->second->depth<<endl;
         it = this->child.erase(it); // Erase from map and move to next
     }
 }

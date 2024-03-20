@@ -1,7 +1,9 @@
 # Makefile
 SDSLPATH = ~
 CXX = g++
-CXXFLAGS = -std=c++17 -g -I$(SDSLPATH)/include -DUNORDERED_DENSE -msse3 -O3 -fomit-frame-pointer -funroll-loops -DCHECK -DINT2PS
+CXXFLAGS = -std=c++17 -g -I$(SDSLPATH)/include
+#-DUNORDERED_DENSE -msse3 -O3 -fomit-frame-pointer -funroll-loops
+#-DCHECK -DINT2PS
 #-DVERBOSE
 #-DCHECK
 #-DINT2PS
@@ -18,7 +20,7 @@ LIBS = -lsdsl -ldivsufsort -ldivsufsort64
 # 项目的源文件
 SOURCES = main.cpp node.cpp OPST.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
-TARGET = my_program
+TARGET = my_program_NA
 
 all: $(TARGET)
 
