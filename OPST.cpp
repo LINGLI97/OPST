@@ -8,7 +8,7 @@
 #include <unordered_set>
 
 #include "OPST.h"
-#define VISUALIZATION
+//#define VISUALIZATION
 //#define CHECK
 
 //#define VERBOSE
