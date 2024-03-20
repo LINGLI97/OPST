@@ -42,7 +42,7 @@ dot -Tpdf pic_sufL -o suffix_tree_suf.pdf
 
 
 
-Using unordered_dense from [here](https://github.com/martinus/unordered_dense/tree/main) by setting the following flag. Otherwise, it will utilize the standard unordered map.
+Using unordered_dense from [here](https://github.com/martinus/unordered_dense/tree/main) by setting the following flag. Otherwise, it will utilize std::unordered_map.
 ```cpp
 -DUNORDERED_DENSE
 ```
