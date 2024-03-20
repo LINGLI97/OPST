@@ -420,7 +420,7 @@ pair<int, int> OPST:: LastCode(int cur_i, int a , int b){
     assert(make_pair(predecessorNV(a, b), successorNV(a,b)) == make_pair(predecessorWT(wt.root(), a-1, b-1), successorWT(wt.root(), a-1, b-1)));
 
 #endif
-    if ((double) b -a < RANGE_THRESHOLD  || (double) n < SiZE_THRESHOLD * log(sigma) ){
+    if ((double) b -a < rangeThreshold  || (double) n < rangeThreshold * log(sigma) ){
         int predecessor_local = predecessorNV(a, b);
         int successor_local =  successorNV(a,b);
         if (predecessor_local != NA){
@@ -469,23 +469,22 @@ uint64_t OPST::LastCodeInt(int cur_i, int a, int b) {
         return pair2int(make_pair(n,n), n) +1;
         // return the integer (n+1)(n+2) +1 indicating $
     } else{
+
+        pair<int, int> LastCodePair;
+        LastCodePair = this->LastCode(cur_i,a, b);
 #ifdef CHECK
-        if (pair2int(LastCode, n) > terminate_label){
-            cout<<LastCode.first<<","<<LastCode.second<<endl;
-            cout<<pair2int(LastCode, n)<<endl;
+        if (pair2int(LastCodePair, n) > terminate_label){
+            cout<<LastCodePair.first<<","<<LastCodePair.second<<endl;
+            cout<<pair2int(LastCodePair, n)<<endl;
             cout<<terminate_label<<endl;
         }
-        assert(pair2int(LastCode, n) < terminate_label);
+        assert(pair2int(LastCodePair, n) < terminate_label);
 #endif
-        pair<int, int> LastCode;
-        LastCode = this->LastCode(cur_i,a, b);
 
-
-        return pair2int(LastCode, n);
+        return pair2int(LastCodePair, n);
     }
 
 }
-
 
 
 
@@ -503,12 +502,45 @@ void OPST::generateDot(stNode* node, std::ofstream& dotFile, bool suf) {
 
     // 对于每个子节点，输出一条边的描述
     stNode** children = node->allChild();
+    if (children == NULL) {
+
+            dotFile << "\"" << node << "\" [shape=ellipse, style=filled, fillcolor=green, label=\" Start: " << node->getStart() << "\"];\n";
+
+    }
     if (children != NULL){
+
         int numChildren = node->numChild(); // 获取子节点的数量
+
         for (int i = 0; i < numChildren; ++i) {
-            dotFile << "\"" << node << "\" -> \"" << children[i] << "\" [label=\"" << int2ps[children[i]->getLabel()].first<<" , "<<int2ps[children[i]->getLabel()].second << "\"];\n";
+
+            if (int2ps[children[i]->getLabel()].first == -1){
+                if (int2ps[children[i]->getLabel()].second == -1){
+                    dotFile << "\"" << node << "\" -> \"" << children[i] << "\" [label=\"" << "("<<"⊥"<<" , "<<"⊥"<<")" << "\"];\n";
+                } else{
+                    assert(int2ps[children[i]->getLabel()].second != -2);
+                    dotFile << "\"" << node << "\" -> \"" << children[i] << "\" [label=\"" << "("<<"⊥"<<" , "<<int2ps[children[i]->getLabel()].second<<")" << "\"];\n";
+
+                }
+
+            } else if (int2ps[children[i]->getLabel()].first == -2){
+                assert(int2ps[children[i]->getLabel()].second == -2);
+                dotFile << "\"" << node << "\" -> \"" << children[i] << "\" [label=\"" << "$" << "\"];\n";
+
+
+            } else{
+
+                if (int2ps[children[i]->getLabel()].second == -1){
+                    dotFile << "\"" << node << "\" -> \"" << children[i] << "\" [label=\"" << "("<<int2ps[children[i]->getLabel()].first<<" , "<<"⊥"<<")" << "\"];\n";
+                } else {
+                    dotFile << "\"" << node << "\" -> \"" << children[i] << "\" [label=\"" << "("
+                            << int2ps[children[i]->getLabel()].first << " , " << int2ps[children[i]->getLabel()].second
+                            << ")" << "\"];\n";
+                }
+            }
 
             generateDot(children[i], dotFile, suf);
+//            dotFile << "node [shape=ellipse, style=filled, fillcolor=lightgrey];\n";
+
 
         }
     }
@@ -579,7 +611,8 @@ void OPST::int2psInsert(int cur_i, int a, int b){
 
 
 
-OPST::OPST(  int_vector<> & w )
+
+OPST::OPST(int_vector<> & w, int rangeThreshold, int sizeThreshold)
 {
     this->w = w;
     this->n = w.size();
@@ -595,8 +628,22 @@ OPST::OPST(  int_vector<> & w )
     cout<<"terminate_label $ = " << terminate_label<<endl;
 //    cout<< this->n<<endl;
 
-    assert((int)wt.size() == this->n);
+    this->rangeThreshold = rangeThreshold;
+    this->sizeThreshold = sizeThreshold;
+//    this->unordered_denseFlag = parser.get<bool>("unordered_dense");
 
+#ifdef UNORDERED_DENSE
+    ankerl::unordered_dense::segmented_map<uint64_t, stNode*> ::iterator it;
+#else
+    unordered_map<uint64_t, stNode*>::iterator it;
+
+#endif
+
+
+#ifdef CHECK
+
+    assert((int)wt.size() == this->n);
+#endif
     this->root = new stNode(terminate_label);
     this->root->setSLink( this->root );
 
@@ -841,26 +888,26 @@ stNode * OPST::createNode(stNode * u, int d )
 }
 
 
-stNode * OPST::createNodeIm(stNode * u, int d )
-{
-    int i = u->getStart();
-    stNode * p = u->getParent();
-//    cout<<LastCodeInt(cur_i, i, i+p->getDepth())<<endl;
-    cout<<i<<" , "<<i+d<<endl;
-    cout<<LastCodeInt(i, i, i+d)<<endl;
-
-    stNode * v = new stNode( i, d, LastCodeInt(i,i, i+p->getDepth()));
-    v->addChild( u, LastCodeInt(i, i, i+d));
-
-
-    cout<<i<<" , "<<i+p->getDepth()<<endl;
-    cout<<LastCodeInt(i, i, i+p->getDepth())<<endl;
-    p->addChild( v, LastCodeInt(i, i, i+ p->getDepth()) );
-    u->setParent( p );
-
-//	v->setParent( p );
-    return v;
-}
+//stNode * OPST::createNodeIm(stNode * u, int d )
+//{
+//    int i = u->getStart();
+//    stNode * p = u->getParent();
+////    cout<<LastCodeInt(cur_i, i, i+p->getDepth())<<endl;
+//    cout<<i<<" , "<<i+d<<endl;
+//    cout<<LastCodeInt(i, i, i+d)<<endl;
+//
+//    stNode * v = new stNode( i, d, LastCodeInt(i,i, i+p->getDepth()));
+//    v->addChild( u, LastCodeInt(i, i, i+d));
+//
+//
+//    cout<<i<<" , "<<i+p->getDepth()<<endl;
+//    cout<<LastCodeInt(i, i, i+p->getDepth())<<endl;
+//    p->addChild( v, LastCodeInt(i, i, i+ p->getDepth()) );
+//    u->setParent( p );
+//
+////	v->setParent( p );
+//    return v;
+//}
 
 
 void OPST::createLeaf( int i, stNode * u, int d )
@@ -1024,17 +1071,17 @@ stNode * OPST::forward_search_node( stNode * s, int l )
 //    }
 //}
 
-
-void OPST::printLeaves()
-{
-//    this->leaves.clear();
-    cout << "________________" << endl;
-//    bfs_leaves();
-    for ( auto it = this->leaves.begin(); it != this->leaves.end(); it++ )
-    {
-        cout << it->first << ":" << it->second << ":\t";
-        it->second->printOcc();
-        cout << endl;
-    }
-}
+//
+//void OPST::printLeaves()
+//{
+////    this->leaves.clear();
+//    cout << "________________" << endl;
+////    bfs_leaves();
+//    for ( auto it = this->leaves.begin(); it != this->leaves.end(); it++ )
+//    {
+//        cout << it->first << ":" << it->second << ":\t";
+//        it->second->printOcc();
+//        cout << endl;
+//    }
+//}
 

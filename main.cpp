@@ -18,7 +18,7 @@ using namespace std;
 using namespace sdsl;
 
 //#define terminate_label 0
-#include "cmdline.h"
+//#include "cmdline.h"
 
 
 void readfile(const string &filename, int_vector<>& input_seq_vec){
@@ -84,9 +84,56 @@ int main(int argc, char *argv[])
 
     cmdline::parser parser;
     parser.add<string>("filepath", 'f', "the path to input file", false, "discretization.txt");
+    parser.add<int>("rangeThreshold", 'r', "the range of (a,b) determines call the naive or wavelet tree method", false, 10);
+    parser.add<int>("sizeThreshold", 's', "the time relations between size and sigma determines call the naive or wavelet tree method", false, 5);
+//    parser.add<bool>("unordered_dense", 'u', "Use unordered_dense map or not", false, false);
+
+
     parser.parse_check(argc, argv);
+
     string filename = parser.get<string>("filepath");
-    cout<< "filename is "<<filename<<endl;
+
+    cout<< "Suffix tree is constructed based on "<<filename<<endl;
+#ifdef VERBOSE
+
+    cout<<"In detailed log mode."<<endl;
+#else
+    cout<<"In succinct log mode."<<endl;
+
+
+#endif
+
+    int rangeThreshold = parser.get<int>("rangeThreshold");
+    int sizeThreshold = parser.get<int>("sizeThreshold");
+cout<<"---------------------------------------Some Parameters Info Board----------------------------------------------------"<<endl;
+    cout<< "If the range of LastCode input (a, b) , namely b - a < "<<rangeThreshold <<", or input size n < "<<sizeThreshold<<" * log(sigma), it utilizes the naive way to compute (p(w), s(w))"<<endl;
+
+
+#ifdef UNORDERED_DENSE
+
+    cout<<"Using unordered dense map"<<endl;
+#else
+    cout<<"Using std::unordered_map"<<endl;
+
+#endif
+
+#ifdef INT2PS
+    cout<<"Run the following cmd to visualize the constructed suffix tree:"<<endl;
+    cout<<"dot -Tpdf pic_nosufL -o suffix_tree_nosuf.pdf"<<endl;
+    cout<<"dot -Tpdf pic_sufL -o suffix_tree_suf.pdf"<<endl;
+
+#endif
+
+
+#ifdef CHECK
+
+    cout<<"Using safe check"<<endl;
+#else
+    cout<<"Not using safe check"<<endl;
+
+#endif
+
+    cout<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
     int_vector<> input_seq_vec;
     readfile(filename, input_seq_vec);
 //    for(int i= 0 ;i< input_seq_vec.size(); i++) {
@@ -97,7 +144,7 @@ int main(int argc, char *argv[])
 
     auto OP_start = std::chrono::high_resolution_clock::now();
 
-    OPST OP(input_seq_vec);
+    OPST OP(input_seq_vec, rangeThreshold, sizeThreshold);
     auto OP_end = std::chrono::high_resolution_clock::now();
     double time_OP = std::chrono::duration_cast < std::chrono::milliseconds > (OP_end - OP_start).count()*0.001;
     cout<<"Runtime for construction  = "<<time_OP<<" s"<<endl;

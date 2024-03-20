@@ -10,6 +10,8 @@
 #include <string>
 #include <map>
 #include "node.h"
+#include "cmdline.h"
+
 //#include "Predecessor.h"
 //#include "Successor.h"
 #include <sdsl/wavelet_trees.hpp>
@@ -17,8 +19,8 @@
 #include <random> // For std::mt19937 and std::uniform_int_distribution
 #include <cstdlib> // For std::exit
 using namespace sdsl;
-#define RANGE_THRESHOLD 10
-#define SiZE_THRESHOLD 5
+//#define RANGE_THRESHOLD 10
+//#define SiZE_THRESHOLD 5
 //#define VERBOSE
 #define NA -1
 
@@ -44,17 +46,21 @@ private:
     int_vector<> w;
     int n; // the length of w
     int num;
-    map<uint64_t, stNode*> leaves;
+//    map<uint64_t, stNode*> leaves;
     map<uint64_t, pair<int, int>> int2ps;
+
+    int rangeThreshold;
+    int sizeThreshold;
 
     DerivedWTInt wt;
     int sigma;
     uint64_t terminate_label;
     int middle_implicit_max = 0;
+//    bool unordered_denseFlag;
 //    void bfs_leaves();
 
 public:
-    explicit OPST( int_vector<> & W );
+    explicit OPST( int_vector<> & w, int rangeThreshold, int sizeThreshold);
     void int2psInsert(int cur_i, int a, int b);
 
 
@@ -79,7 +85,7 @@ public:
 
 
     stNode * createNode(  stNode * u, int d );
-    stNode * createNodeIm(stNode * u, int d );
+//    stNode * createNodeIm(stNode * u, int d );
 
 
 //    stNode * createBranch( stNode * u, int i, int d );
@@ -89,7 +95,7 @@ public:
 //    int forward_search( string x );
 //    stNode * forward_search_node( stNode * s, int l );
 //    void trimST( int * ME );
-    void printLeaves();
+//    void printLeaves();
     void deleteTree(stNode* node);
     void exportSuffixTreeToDot(stNode * root, const std::string& filename,bool suf);
     void generateDot(stNode* node, std::ofstream& dotFile, bool suf);

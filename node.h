@@ -9,9 +9,10 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
+#include "unordered_dense.h"
+#include <iostream>
 using namespace std;
-
+//#define UNORDERED_DENSE
 
 class stNode
 {
@@ -19,7 +20,12 @@ private:
     int start;
     int depth;
     uint64_t label; // label is the label of edge which links its parent and itself
-    unordered_map<uint64_t, stNode*> child;
+#ifdef UNORDERED_DENSE
+
+    ankerl::unordered_dense::segmented_map<uint64_t, stNode*> child;
+#else
+        unordered_map<uint64_t, stNode*> child;
+#endif
     vector<int> Occ;
     stNode * parent;
     stNode * slink;
@@ -43,7 +49,7 @@ public:
     int printOcc();
     void setParent ( stNode * parentNode );
     int numChild();
-    void printChild();
+//    void printChild();
     stNode** allChild();
     void deleteAllChildren();
 

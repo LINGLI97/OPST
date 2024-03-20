@@ -61,7 +61,13 @@ int stNode::getLabel()
 
 stNode * stNode::getChild( uint64_t l )
 {
+#ifdef UNORDERED_DENSE
+    ankerl::unordered_dense::segmented_map<uint64_t, stNode*> ::iterator it;
+#else
     unordered_map<uint64_t, stNode*>::iterator it;
+
+#endif
+
     it = this->child.find(l);
     if ( it == this->child.end() )
         return NULL;
@@ -90,6 +96,8 @@ void stNode::addChild( stNode * childNode, uint64_t l)
     if ( it == this->child.end() )
     {
         pair <uint64_t , stNode*> insertChild( l, childNode );
+
+
         this->child.insert( insertChild );
     }
     else
@@ -201,11 +209,11 @@ int stNode::numChild()
     return this->child.size();
 }
 
-void stNode::printChild()
-{
-    for ( auto it = this->child.begin(); it != this->child.end(); it++ )
-        cout << it->first << '\t' << it->second << endl;
-}
+//void stNode::printChild()
+//{
+//    for ( auto it = this->child.begin(); it != this->child.end(); it++ )
+//        cout << it->first << '\t' << it->second << endl;
+//}
 
 
 /*
