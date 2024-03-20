@@ -19,6 +19,33 @@ It will run on ecg_1_to_40.txt_merged20.txt ~ ecg_1_to_40.txt_merged100.txt, cor
 
 
 
+## Executable files 
+
+Without unordered_dense map and optimization flags (-msse3 -O3 -fomit-frame-pointer -funroll-loops):  
+```bash 
+./my_program_NA      
+```
+Only with optimization flags:   
+```bash 
+./my_program_flag 
+```
+Only with unordered_dense map:  
+```bash 
+./my_program_map
+```
+With unordered_dense map and optimization flags:  
+```bash 
+./my_program_map_flag 
+```
+
+You can easily specify parameters, for example:
+
+```bash 
+./my_program_NA -f ecg_1_to_40.txt_merged20.txt -r 20 -s 10
+```
+
+-r specifies  "the range of (a,b) determines calling the naive or wavelet tree method", the default value is 10.
+-s specifies  "the time relations between size and sigma determines calling the naive or wavelet tree method", the  default value is 5.
 
 ## Tips
 We can print the detailed information by setting:
