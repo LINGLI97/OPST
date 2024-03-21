@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
     cmdline::parser parser;
     parser.add<string>("filepath", 'f', "the path to input file", false, "discretization.txt");
     parser.add<int>("rangeThreshold", 'r', "the range of (a,b) determines call the naive or wavelet tree method", false, 10);
-    parser.add<int>("sizeThreshold", 's', "the time relations between size and sigma determines call the naive or wavelet tree method", false, 5);
+//    parser.add<int>("sizeThreshold", 's', "the time relations between size and sigma determines call the naive or wavelet tree method", false, 5);
 //    parser.add<bool>("unordered_dense", 'u', "Use unordered_dense map or not", false, false);
 
 
@@ -73,9 +73,9 @@ int main(int argc, char *argv[])
 #endif
 
     int rangeThreshold = parser.get<int>("rangeThreshold");
-    int sizeThreshold = parser.get<int>("sizeThreshold");
+//    int sizeThreshold = parser.get<int>("sizeThreshold");
 cout<<"---------------------------------------Some Parameters Info Board----------------------------------------------------"<<endl;
-cout<< "If the range of LastCode input (a, b) , namely b - a < "<<rangeThreshold <<", or input size n < "<<sizeThreshold<<" * log(sigma), it utilizes the naive way to compute (p(w), s(w))"<<endl;
+cout<< "If the range of LastCode input (a, b) , namely b - a < "<<rangeThreshold <<", it utilizes the naive way to compute (p(w), s(w))"<<endl;
 
 
 #ifdef UNORDERED_DENSE
@@ -110,12 +110,13 @@ cout<< "If the range of LastCode input (a, b) , namely b - a < "<<rangeThreshold
 
     auto OP_start = std::chrono::high_resolution_clock::now();
 
-    OPST OP(input_seq_vec, rangeThreshold, sizeThreshold);
+    OPST OP(input_seq_vec, rangeThreshold);
 
     auto OP_end = std::chrono::high_resolution_clock::now();
     double time_OP = std::chrono::duration_cast < std::chrono::milliseconds > (OP_end - OP_start).count()*0.001;
     cout<<"Runtime for construction  = "<<time_OP<<" s"<<endl;
 
+    cout<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
 
     return 0;
 }

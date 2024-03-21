@@ -47,7 +47,8 @@ private:
     int n; // the length of w
     int num;
 //    map<uint64_t, stNode*> leaves;
-    map<uint64_t, pair<int, int>> int2ps;
+    unordered_map<uint64_t, pair<int, int>> int2ps;
+//    unordered_map<pair<int, int>,uint64_t> LastcodeIntMap;
 
     int rangeThreshold;
     int sizeThreshold;
@@ -56,11 +57,12 @@ private:
     int sigma;
     uint64_t terminate_label;
     int middle_implicit_max = 0;
+    bool flagSize;
 //    bool unordered_denseFlag;
 //    void bfs_leaves();
 
 public:
-    explicit OPST( int_vector<> & w, int rangeThreshold, int sizeThreshold);
+    explicit OPST( int_vector<> & w, int rangeThreshold);
     void int2psInsert(int a, int b);
 
 
@@ -96,7 +98,7 @@ public:
 //    stNode * forward_search_node( stNode * s, int l );
 //    void trimST( int * ME );
 //    void printLeaves();
-    void deleteTree(stNode* node);
+    void deleteTree(stNode * root);
     void exportSuffixTreeToDot(stNode * root, const std::string& filename,bool suf);
     void generateDot(stNode* node, std::ofstream& dotFile, bool suf);
 

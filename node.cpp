@@ -58,11 +58,11 @@ int stNode::getLabel()
 {
     return this->label;
 }
-
 stNode * stNode::getChild( uint64_t l )
 {
 #ifdef UNORDERED_DENSE
-    ankerl::unordered_dense::segmented_map<uint64_t, stNode*> ::iterator it;
+    ankerl::unordered_dense::map<uint64_t, stNode*>::iterator it;
+
 #else
     unordered_map<uint64_t, stNode*>::iterator it;
 
@@ -107,7 +107,7 @@ void stNode::addChild( stNode * childNode, uint64_t l)
     childNode->label = l;
     childNode->parent = this;
 }
-
+/*
 void stNode::addLeaf( int i , uint64_t terminate_label)
 {
     auto it = this->child.find( terminate_label );
@@ -133,21 +133,7 @@ void stNode::removeChild( uint64_t l )
         this->child.erase( it );
     }
 }
-
-int stNode::printOcc()
-{
-    if ( this->Occ.size() == 0 )
-    {
-        cout << "No Occ, failed" << endl;
-        return 0;
-    }
-    else
-    {
-        for( auto it = this->Occ.begin(); it != this->Occ.end(); it++ )
-            cout << *it << '\t';
-        return 1;
-    }
-}
+*/
 
 void stNode::setParent( stNode * parentNode )
 {
@@ -171,28 +157,18 @@ stNode::~stNode()
     }
 }
 */
-
+//int cnt = 0;
 stNode::~stNode()
 {
+
+    /*
     // Check if this node is not the root (has a parent)
-    cout<<"Delete the node"<<endl;
+//    cout<<"Delete the node"<<endl;
     if (this->parent != nullptr)
     {
-        // Find this node in the parent's child map
-        auto it = this->parent->child.find(this->label);
-        if (it != this->parent->child.end())
-        {
-            // Erase this node from the parent's child map
-            cout<< "this->parent->label and this->parent->depth are "<<this->parent->label<< " "<<this->parent->depth<<endl;
-            cout<<"this->parent->child.erase(it);"<<it->second->label<<endl;
-            this->parent->child.erase(it);
-        }
-
         // If parent's child map is empty after erasing, delete the parent
         if (this->parent->child.empty())
         {
-
-            std::cout << "delete " << this->parent->label<< " "<<this->parent->depth <<std::endl;
             delete this->parent;
         }
     }
@@ -200,18 +176,42 @@ stNode::~stNode()
     // Delete all child nodes
     for (auto it = this->child.begin(); it != this->child.end(); )
     {
-        std::cout << "delete " << it->second->label<<" "<<it->second->depth<< std::endl;
-        cout<<it->second->label<<" "<<it->second->depth<<endl;
+
         delete it->second; // Delete child node
-        cout<<it->second->label<<" "<<it->second->depth<<endl;
         it = this->child.erase(it); // Erase from map and move to next
+
     }
+*/
+
+
+    std::vector<stNode*> children = this->allChild();
+    if (!children.empty()) {
+
+        int numChildren = children.size();
+        for (int i = 0; i < numChildren; ++i) {
+//            cout<<children[i]<<endl;
+//            cnt++;
+//            cout<<cnt<<endl;
+            delete children[i];
+        }
+//        if(!children.empty())
+//        {
+//            cout<<children.size()<<endl;
+//            cout<<"error";
+//            cout<<endl;
+//            exit(-1);
+//        }
+    }
+
 }
 
 
 
 int stNode::numChild()
 {
+    if (this->child.empty()){
+        return 0;
+    }
     return this->child.size();
 }
 
@@ -250,9 +250,23 @@ stNode ** stNode::allChild()
 //}
 
 
+std::vector<stNode*> stNode::allChild() {
+    std::vector<stNode*> allChildren;
+    for (auto& pair : this->child) {
+        allChildren.push_back(pair.second);
+    }
+    return allChildren;
+}
 
+/*
 stNode ** stNode::allChild()
 {
+
+
+
+
+
+
     int n = this->child.size();
     if ( n == 0 )
         return NULL;
@@ -269,12 +283,4 @@ stNode ** stNode::allChild()
     }
 }
 
-
-void stNode::deleteAllChildren() {
-    // 遍历所有子节点，并删除它们
-    for (auto& pair : this->child) {
-        delete pair.second;
-    }
-    // 清空子节点容器
-    this->child.clear();
-}
+*/

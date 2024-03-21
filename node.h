@@ -21,12 +21,13 @@ private:
     int depth;
     uint64_t label; // label is the label of edge which links its parent and itself
 #ifdef UNORDERED_DENSE
+    ankerl::unordered_dense::map<uint64_t, stNode*> child;
 
-    ankerl::unordered_dense::segmented_map<uint64_t, stNode*> child;
 #else
         unordered_map<uint64_t, stNode*> child;
 #endif
-    vector<int> Occ;
+
+   // vector<int> Occ;
     stNode * parent;
     stNode * slink;
 public:
@@ -44,14 +45,14 @@ public:
     stNode * getSLink();
     void setSLink( stNode * slinkNode );
     void addChild( stNode * childNode,  uint64_t l );
-    void addLeaf( int i, uint64_t terminate_label );
-    void removeChild( uint64_t l );
-    int printOcc();
+//    void addLeaf( int i, uint64_t terminate_label );
+//    void removeChild( uint64_t l );
+//    int printOcc();
     void setParent ( stNode * parentNode );
     int numChild();
 //    void printChild();
-    stNode** allChild();
-    void deleteAllChildren();
+    std::vector<stNode*> allChild();
+//    void deleteAllChildren();
 
     ~stNode();
 };

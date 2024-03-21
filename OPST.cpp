@@ -24,9 +24,9 @@ int DerivedWTInt::rank_bit( value_type c, int i, size_type offset) const{
         return  ones_before_i;
     }
     else{
-        size_type zero_before_i = i + 1 - ones_before_i;
+//        size_type zero_before_i = i + 1 - ones_before_i;
 
-        return zero_before_i;
+        return i + 1 - ones_before_i;
     }
 }
 
@@ -313,8 +313,8 @@ pair<int, int> OPST:: LastCode(int a , int b){
 #ifdef CHECK
     assert(make_pair(predecessorNV(a, b), successorNV(a,b)) == make_pair(predecessorWT(wt.root(), a-1, b-1), successorWT(wt.root(), a-1, b-1)));
 #endif
-
-    if ((double) b -a < rangeThreshold  || (double) n < rangeThreshold * log(sigma) ){
+// (double) n < rangeThreshold * log(sigma) need to be changed
+    if ( b -a < rangeThreshold){
         int predecessor_local = predecessorNV(a, b);
         int successor_local =  successorNV(a,b);
         if (predecessor_local != NA){
@@ -348,20 +348,21 @@ pair<int, int> OPST:: LastCode(int a , int b){
 uint64_t OPST::LastCodeInt(int a, int b) {
     // call LastCode
     // b = n, returns $ (n+1)(n+2) +1
-    if (b == n){
-
-#ifdef CHECK
-        assert(((uint64_t)n + 1)*((uint64_t)n + 2) + 1 == terminate_label);
-#endif
-        return ((uint64_t)n + 1)*((uint64_t)n + 2) + 1;
-    } else{
-
-
+    if (b != n){
 #ifdef CHECK
         assert(((uint64_t)this->LastCode(a, b).first + 1)*((uint64_t)n + 1) + (uint64_t)this->LastCode(a, b).second +1 < terminate_label);
 #endif
 
         return ((uint64_t)this->LastCode(a, b).first + 1)*((uint64_t)n + 1) + (uint64_t)this->LastCode(a, b).second +1;
+
+
+    } else{
+
+#ifdef CHECK
+        assert(((uint64_t)n + 1)*((uint64_t)n + 2) + 1 == terminate_label);
+#endif
+        return ((uint64_t)n + 1)*((uint64_t)n + 2) + 1;
+
 
     }
 
@@ -372,16 +373,15 @@ uint64_t OPST::LastCodeInt(int a, int b) {
 void OPST::generateDot(stNode* node, std::ofstream& dotFile, bool suf) {
     if (!node) return;
 
-
-    stNode** children = node->allChild();
-    if (children == NULL) {
+    std::vector<stNode*> children = node->allChild();
+    if (children.empty()) {
 
             dotFile << "\"" << node << "\" [shape=ellipse, style=filled, fillcolor=green, label=\" Start: " << node->getStart() << "\"];\n";
 
     }
-    if (children != NULL){
+    if (!children.empty()){
 
-        int numChildren = node->numChild();
+        int numChildren = children.size();
 
         for (int i = 0; i < numChildren; ++i) {
 
@@ -482,7 +482,7 @@ void OPST::int2psInsert(int a, int b){
 
 
 
-OPST::OPST(int_vector<> & w, int rangeThreshold, int sizeThreshold)
+OPST::OPST(int_vector<> & w, int rangeThreshold)
 {
     this->w = w;
     this->n = w.size();
@@ -499,7 +499,7 @@ OPST::OPST(int_vector<> & w, int rangeThreshold, int sizeThreshold)
 
 
     this->rangeThreshold = rangeThreshold;
-    this->sizeThreshold = sizeThreshold;
+
 //    this->unordered_denseFlag = parser.get<bool>("unordered_dense");
 
 
@@ -555,13 +555,33 @@ OPST::OPST(int_vector<> & w, int rangeThreshold, int sizeThreshold)
 
 }
 
+void OPST::deleteTree(stNode * node) {
+    std::stack<stNode*> toDelete;
+    toDelete.push(node);
+
+    while (!toDelete.empty()) {
+        stNode* current = toDelete.top();
+        toDelete.pop();
+
+        // 将所有子节点添加到栈中
+        for (auto child : current->allChild()) {
+            if (child) {
+                toDelete.push(child);
+            }
+        }
+
+        // 删除当前节点
+        delete current;
+    }
+}
+
 
 
 
 OPST::~OPST() {
 
-//    deleteTree(this->root);
-//    delete root;
+    deleteTree(this->root);
+
 }
 
 
