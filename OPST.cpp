@@ -580,7 +580,7 @@ void OPST::deleteTree(stNode * node) {
 
 OPST::~OPST() {
 
-    deleteTree(this->root);
+//    deleteTree(this->root);
 
 }
 
