@@ -5,7 +5,7 @@ do
     while [ $r -le 2048 ]
     do
         inputFileName="ecg_1_to_40.txt_merged$k.txt"
-        echo "Processing file: $inputFileName with r=$r via flag_map"
+        echo "Processing file: $inputFileName with r=$r"
         ./my_program -f $inputFileName -r $r
         r=$(( r * 2 ))
     done
