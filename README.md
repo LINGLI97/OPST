@@ -18,7 +18,7 @@ It will run on ecg_1_to_40.txt_merged20.txt ~ ecg_1_to_40.txt_merged100.txt, cor
 You can easily specify parameters, for example:
 
 ```bash 
-./my_program -f ecg_1_to_40.txt_merged20.txt -r 20 
+./my_program -f ecg_1_to_40.txt_merged20.txt -r 256 
 ```
 
 -r specifies  "the range of (a,b) determines calling the naive or wavelet tree method", the default value is 512.
