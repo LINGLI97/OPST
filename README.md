@@ -5,7 +5,7 @@ Before compiling and running, please install [sdsl](https://github.com/simongog/
 ```
 
 
-## compile and run
+## Compile and run
 
 ```bash 
 ./run.sh
