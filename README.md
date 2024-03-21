@@ -21,7 +21,7 @@ You can easily specify parameters, for example:
 ./my_program -f ecg_1_to_40.txt_merged20.txt -r 20 
 ```
 
--r specifies  "the range of (a,b) determines calling the naive or wavelet tree method", the default value is 10.
+-r specifies  "the range of (a,b) determines calling the naive or wavelet tree method", the default value is 512.
 
 
 ## Tips
