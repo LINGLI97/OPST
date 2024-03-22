@@ -161,7 +161,7 @@ stNode::~stNode()
 stNode::~stNode()
 {
 
-
+/*
 // recursion
     // Delete all child nodes
     for (auto it = this->child.begin(); it != this->child.end(); )
@@ -183,7 +183,7 @@ stNode::~stNode()
         }
     }
 
-
+*/
 
 }
 

@@ -579,8 +579,8 @@ void OPST::deleteTreeIteratively() {
 
 OPST::~OPST() {
 
-    delete this->root;
-//    deleteTreeIteratively();
+//    delete this->root;
+    deleteTreeIteratively();
 }
 
 
