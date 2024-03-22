@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 
 
     cmdline::parser parser;
-    parser.add<string>("filepath", 'f', "the path to input file", false, "discretization.txt");
+    parser.add<string>("filepath", 'f', "the path to input file", false, "discretization.txt_discretized");
     parser.add<int>("rangeThreshold", 'r', "the range of (a,b) determines call the naive or wavelet tree method", false, 512);
 //    parser.add<int>("sizeThreshold", 's', "the time relations between size and sigma determines call the naive or wavelet tree method", false, 5);
 //    parser.add<bool>("unordered_dense", 'u', "Use unordered_dense map or not", false, false);

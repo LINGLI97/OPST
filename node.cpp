@@ -161,18 +161,8 @@ stNode::~stNode()
 stNode::~stNode()
 {
 
-    /*
-    // Check if this node is not the root (has a parent)
-//    cout<<"Delete the node"<<endl;
-    if (this->parent != nullptr)
-    {
-        // If parent's child map is empty after erasing, delete the parent
-        if (this->parent->child.empty())
-        {
-            delete this->parent;
-        }
-    }
 
+// recursion
     // Delete all child nodes
     for (auto it = this->child.begin(); it != this->child.end(); )
     {
@@ -181,27 +171,19 @@ stNode::~stNode()
         it = this->child.erase(it); // Erase from map and move to next
 
     }
-*/
 
-
-    std::vector<stNode*> children = this->allChild();
-    if (!children.empty()) {
-
-        int numChildren = children.size();
-        for (int i = 0; i < numChildren; ++i) {
-//            cout<<children[i]<<endl;
-//            cnt++;
-//            cout<<cnt<<endl;
-            delete children[i];
+    // Check if this node is not the root (has a parent)
+//    cout<<"Delete the node"<<endl;
+    if (this->parent != nullptr)
+    {
+        // If parent's child map is empty after erasing, delete the parent; otherwise deleting this child from its parent's children map
+        if (this->parent->child.empty())
+        {
+            delete this->parent;
         }
-//        if(!children.empty())
-//        {
-//            cout<<children.size()<<endl;
-//            cout<<"error";
-//            cout<<endl;
-//            exit(-1);
-//        }
     }
+
+
 
 }
 

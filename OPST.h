@@ -98,10 +98,10 @@ public:
 //    stNode * forward_search_node( stNode * s, int l );
 //    void trimST( int * ME );
 //    void printLeaves();
-    void deleteTree(stNode * root);
+//    static void deleteTree(stNode * root);
     void exportSuffixTreeToDot(stNode * root, const std::string& filename,bool suf);
     void generateDot(stNode* node, std::ofstream& dotFile, bool suf);
-
+    void deleteTreeIteratively();
     ~OPST();
 };
 

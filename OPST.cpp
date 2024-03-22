@@ -555,33 +555,32 @@ OPST::OPST(int_vector<> & w, int rangeThreshold)
 
 }
 
-void OPST::deleteTree(stNode * node) {
+
+void OPST::deleteTreeIteratively() {
     std::stack<stNode*> toDelete;
-    toDelete.push(node);
+    toDelete.push(root);
 
     while (!toDelete.empty()) {
         stNode* current = toDelete.top();
         toDelete.pop();
 
-        // 将所有子节点添加到栈中
-        for (auto child : current->allChild()) {
-            if (child) {
-                toDelete.push(child);
-            }
-        }
+        for (auto it = current->child.begin(); it != current->child.end();) {
+            if (it->second != nullptr){
+                toDelete.push(it->second);
+                it->second = nullptr;
 
-        // 删除当前节点
-        delete current;
+            }
+            it = current->child.erase(it);
+        }
+            delete current;
+
     }
 }
 
-
-
-
 OPST::~OPST() {
 
-//    deleteTree(this->root);
-
+    delete this->root;
+//    deleteTreeIteratively();
 }
 
 

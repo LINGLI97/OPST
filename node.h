@@ -20,12 +20,7 @@ private:
     int start;
     int depth;
     uint64_t label; // label is the label of edge which links its parent and itself
-#ifdef UNORDERED_DENSE
-    ankerl::unordered_dense::map<uint64_t, stNode*> child;
 
-#else
-        unordered_map<uint64_t, stNode*> child;
-#endif
 
    // vector<int> Occ;
     stNode * parent;
@@ -39,6 +34,23 @@ public:
     void setDepth( int d);
 
     int getLabel();
+
+
+
+#ifdef UNORDERED_DENSE
+    ankerl::unordered_dense::map<uint64_t, stNode*> child;
+
+#else
+    unordered_map<uint64_t, stNode*> child;
+#endif
+
+
+
+
+
+
+
+
 
     stNode * getChild( uint64_t l );
     stNode * getParent();
