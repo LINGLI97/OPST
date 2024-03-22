@@ -5,7 +5,7 @@ Before compiling and running, please install [sdsl](https://github.com/simongog/
 ```
 
 
-## compile and run
+## Compile and run
 
 ```bash 
 ./run.sh
@@ -23,7 +23,7 @@ You can easily specify parameters, for example:
 
 -r specifies  "the range of (a,b) determines calling the naive or wavelet tree method", the default value is 512.
 
-## Dataset
+## Datasets
 We uploaded the datasets to [Google Drive](https://drive.google.com/file/d/1eAJr_UHhCpWPiZ_a-rC9WOwWO3Rf3txp/view).
 
 
