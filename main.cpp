@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
     parser.add<string>("filepath", 'f', "the path to input file", false, "discretization.txt_discretized");
     parser.add<int>("rangeThreshold", 'r', "the range of (a,b) determines call the naive or wavelet tree method", false, 512);
     parser.add<int>("tau", 't', "the value of minimal support, tau > 1", false, 2);
+    parser.add<bool>("printPattern", 'p', "Print out the pattern or not", false, false);
 
 
     parser.parse_check(argc, argv);
@@ -137,9 +138,13 @@ cout<<"--------------------------------------------Information Board------------
     cout<<"Runtime for suffix tree construction  = "<<time_OP - time_wavelet<<" s."<<endl;
     cout<<"Total runtime for wavelet tree and suffix tree construction  = "<<time_OP<<" s."<<endl;
     cout<<"Runtime used for find "<<tau<<"-maximal order-preserving "<<tau<<"-frequent patterns: "<<time_DFS<<" s."<<endl;
-    for (const auto& node : OP.MaxTauNodes) {
-        std::cout << "Pattern found at interval: [" << node->getStart() << ", " << node->getStart() + node->getDepth() -1 << "]" << std::endl;
+    cout<<"The number of found patterns is "<<OP.MaxTauNodes.size()<<endl;
+    if (parser.get<bool>("printPattern")){
+        for (const auto& node : OP.MaxTauNodes) {
+            std::cout << "Pattern found at interval: [" << node->getStart() << ", " << node->getStart() + node->getDepth() -1 << "]" << std::endl;
+        }
     }
+
 
     cout<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
 

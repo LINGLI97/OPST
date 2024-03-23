@@ -18,11 +18,14 @@ It will run on ecg_1_to_40.txt_merged20.txt ~ ecg_1_to_40.txt_merged100.txt, cor
 You can easily specify parameters, for example:
 
 ```bash 
-./my_program -f ecg_1_to_40.txt_merged20.txt -r 256 -t 2
+./my_program -f ecg_1_to_40.txt_merged20.txt -r 256 -t 2 -p 1
 ```
--f specifies the file path;   
--r specifies  "the range of (a,b) determines calling the naive or wavelet tree method", the default value is 512;   
--t specifies the value of minimal support, tau > 1.  
+The `-f` option determines specifies the file path;   
+The `-r` option determines   "the range of (a,b) determines calling the naive or wavelet tree method". The default value is 512;   
+The `-t` option determines  the value of minimal support, tau > 1. The default value is 512.  
+The `-p` option determines whether to print the found patterns. The default value is 0.
+
+
 
 ## Print Out Information
 
@@ -41,6 +44,7 @@ Runtime for wavelet tree construction  = 0.009 s.
 Runtime for suffix tree construction  = 0 s.  
 Total runtime for wavelet tree and suffix tree construction  = 0.009 s.  
 Runtime used for find 2-maximal order-preserving 2-frequent patterns: 0 s.  
+The number of found patterns is 2  
 Pattern found at interval: [1, 3]  
 Pattern found at interval: [2, 4]  
 
