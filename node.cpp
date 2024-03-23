@@ -16,6 +16,11 @@ stNode::stNode()
     this->label = 0;
     this->parent = NULL;
     this->slink = NULL;
+
+    this->visited = false;
+    this->isCandidate = false;
+    this->leftMax = true;
+    this->leafCount = 0;
 }
 
 
@@ -27,6 +32,10 @@ stNode::stNode(uint64_t terminate_label)
     this->label = terminate_label;
     this->parent = NULL;
     this->slink = NULL;
+    this->visited = false;
+    this->isCandidate = false;
+    this->leftMax = true;
+    this->leafCount = 0;
 }
 
 stNode::stNode( int i, int d, uint64_t l)
@@ -36,6 +45,10 @@ stNode::stNode( int i, int d, uint64_t l)
     this->label = l;
     this->parent = NULL;
     this->slink = NULL;
+    this->visited = false;
+    this->isCandidate = false;
+    this->leftMax = true;
+    this->leafCount = 0;
 }
 
 int stNode::getStart()
@@ -107,57 +120,34 @@ void stNode::addChild( stNode * childNode, uint64_t l)
     childNode->label = l;
     childNode->parent = this;
 }
-/*
-void stNode::addLeaf( int i , uint64_t terminate_label)
-{
-    auto it = this->child.find( terminate_label );
-    if ( it == this->child.end() )
-    {
-        stNode * leaf = new stNode( i, this->depth+1, terminate_label );
-        leaf->parent = this;
-        leaf->Occ.push_back( i );
-        pair<uint64_t , stNode*> insertLeaf( terminate_label, leaf );
-        this->child.insert( insertLeaf );
-    }
-    else
-    {
-        it->second->Occ.push_back( i );
-    }
-}
-
-void stNode::removeChild( uint64_t l )
-{
-    auto it = this->child.find( l );
-    if ( it != this->child.end() )
-    {
-        this->child.erase( it );
-    }
-}
-*/
 
 void stNode::setParent( stNode * parentNode )
 {
     this->parent = parentNode;
 }
-/*
-stNode::~stNode()
+
+
+int stNode::numChild()
 {
-    auto it = this->parent->child.find( this->label );
-    this->parent->child.erase( it );
-    for ( auto it = this->child.begin(); it != this->child.end(); ++it )
-    {
-        cout << "delete " << it->second << endl;
-        delete it->second;
+    if (this->child.empty()){
+        return 0;
     }
-    this->child.clear();
-    if ( this->parent->child.empty() )
-    {
-        cout << "delete " << this->parent << endl;
-        delete this->parent;
-    }
+    return this->child.size();
 }
-*/
-//int cnt = 0;
+
+
+
+
+std::vector<stNode*> stNode::allChild() {
+    std::vector<stNode*> allChildren;
+    for (auto& pair : this->child) {
+        allChildren.push_back(pair.second);
+    }
+    return allChildren;
+}
+
+
+
 stNode::~stNode()
 {
 
@@ -187,82 +177,3 @@ stNode::~stNode()
 
 }
 
-
-
-int stNode::numChild()
-{
-    if (this->child.empty()){
-        return 0;
-    }
-    return this->child.size();
-}
-
-//void stNode::printChild()
-//{
-//    for ( auto it = this->child.begin(); it != this->child.end(); it++ )
-//        cout << it->first << '\t' << it->second << endl;
-//}
-
-
-/*
-stNode ** stNode::allChild()
-{
-    int n = this->child.size();
-    if ( n == 0 )
-        return NULL;
-    else
-    {
-        stNode ** allChild = new stNode * [n];
-        int i = 0;
-        auto it = this->child.begin();
-        for ( ; it != this->child.end(); ++it, ++i )
-        {
-            allChild[i] = it->second;
-        }
-        return allChild;
-    }
-}
-*/
-//std::vector<stNode*> stNode::allChildren() {
-//    std::vector<stNode*> children;
-//    for (auto& pair : this->child) {
-//        children.push_back(pair.second);
-//    }
-//    return children;
-//}
-
-
-std::vector<stNode*> stNode::allChild() {
-    std::vector<stNode*> allChildren;
-    for (auto& pair : this->child) {
-        allChildren.push_back(pair.second);
-    }
-    return allChildren;
-}
-
-/*
-stNode ** stNode::allChild()
-{
-
-
-
-
-
-
-    int n = this->child.size();
-    if ( n == 0 )
-        return NULL;
-    else
-    {
-        stNode ** allChild = new stNode * [n];
-        int i = 0;
-        auto it = this->child.begin();
-        for ( ; it != this->child.end(); ++it, ++i )
-        {
-            allChild[i] = it->second;
-        }
-        return allChild;
-    }
-}
-
-*/

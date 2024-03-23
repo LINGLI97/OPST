@@ -22,7 +22,6 @@ private:
     uint64_t label; // label is the label of edge which links its parent and itself
 
 
-   // vector<int> Occ;
     stNode * parent;
     stNode * slink;
 public:
@@ -32,8 +31,13 @@ public:
     int getStart();
     int getDepth();
     void setDepth( int d);
-
     int getLabel();
+
+//DFS
+    bool isCandidate;
+    bool leftMax;
+    bool visited;
+    int leafCount;
 
 
 
@@ -45,26 +49,16 @@ public:
 #endif
 
 
-
-
-
-
-
-
-
     stNode * getChild( uint64_t l );
     stNode * getParent();
     stNode * getSLink();
     void setSLink( stNode * slinkNode );
     void addChild( stNode * childNode,  uint64_t l );
-//    void addLeaf( int i, uint64_t terminate_label );
-//    void removeChild( uint64_t l );
-//    int printOcc();
+
     void setParent ( stNode * parentNode );
     int numChild();
-//    void printChild();
     std::vector<stNode*> allChild();
-//    void deleteAllChildren();
+
 
     ~stNode();
 };

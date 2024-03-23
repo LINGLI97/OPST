@@ -369,6 +369,63 @@ uint64_t OPST::LastCodeInt(int a, int b) {
 }
 
 
+void OPST::generateCount(stNode* node, std::ofstream& dotFile, bool suf) {
+    if (!node) return;
+    dotFile << "\"" << node << "\" [label=\"" << "Leaf Count: " << node->leafCount << ", Left Max: " << (node->leftMax ? "Yes": "No") << ", Candidate: " << (node->isCandidate ? "Yes" : "No") << "\"];\n";
+    std::vector<stNode*> children = node->allChild();
+    if (children.empty()) {
+
+//        dotFile << "\"" << node << "\" [shape=ellipse, style=filled, fillcolor=green, label=\" Start: " << node->getStart() << ":  "<<node->leafCount<<";"<<node->leftMax<<";"<<node->isCandidate<< "\"];\n";
+
+    }
+    if (!children.empty()){
+
+        int numChildren = children.size();
+
+        for (int i = 0; i < numChildren; ++i) {
+
+            if (int2ps[children[i]->getLabel()].first == -1){
+                if (int2ps[children[i]->getLabel()].second == -1){
+                    dotFile << "\"" << node << "\" -> \"" << children[i] << "\" [label=\"" << "("<<"⊥"<<" , "<<"⊥"<<") "<< "\"];\n";
+                } else{
+                    assert(int2ps[children[i]->getLabel()].second != -2);
+                    dotFile << "\"" << node << "\" -> \"" << children[i] << "\" [label=\"" << "("<<"⊥"<<" , "<<int2ps[children[i]->getLabel()].second<<")"<< "\"];\n";
+
+                }
+
+            } else if (int2ps[children[i]->getLabel()].first == -2){
+                assert(int2ps[children[i]->getLabel()].second == -2);
+                dotFile << "\"" << node << "\" -> \"" << children[i] << "\" [label=\"" << "$ "<< "\"];\n";
+
+
+            } else{
+
+                if (int2ps[children[i]->getLabel()].second == -1){
+                    dotFile << "\"" << node << "\" -> \"" << children[i] << "\" [label=\"" << "("<<int2ps[children[i]->getLabel()].first<<" , "<<"⊥"<<")"<< "\"];\n";
+                } else {
+                    dotFile << "\"" << node << "\" -> \"" << children[i] << "\" [label=\"" << "("
+                            << int2ps[children[i]->getLabel()].first << " , " << int2ps[children[i]->getLabel()].second
+                            << ") "<< "\"];\n";
+                }
+            }
+
+            generateCount(children[i], dotFile, suf);
+
+
+        }
+    }
+    if (suf){
+        if (node->getSLink()!=NULL){
+            dotFile << "\"" << node << "\" -> \"" << node->getSLink() << "\" [label=\"" << "" << "\",color=\"red\"];\n";
+        }
+
+    }
+
+
+
+}
+
+
 
 void OPST::generateDot(stNode* node, std::ofstream& dotFile, bool suf) {
     if (!node) return;
@@ -426,7 +483,7 @@ void OPST::generateDot(stNode* node, std::ofstream& dotFile, bool suf) {
 
 }
 
-void OPST::exportSuffixTreeToDot(stNode * node, const std::string& filename,bool suf) {
+void OPST::exportSuffixTreeToDot(const std::string& filename,bool suf) {
     std::ofstream dotFile(filename);
     if (!dotFile.is_open()) {
         std::cerr << "Unable to open file for writing: " << filename << std::endl;
@@ -442,7 +499,8 @@ void OPST::exportSuffixTreeToDot(stNode * node, const std::string& filename,bool
 
 
 
-    generateDot(node, dotFile,suf);
+//    generateDot(root, dotFile,suf);  //without leafCount and flag info
+    generateCount(root, dotFile,suf);  //with leafCount and flag info
 
 
     dotFile << "}\n";
@@ -482,25 +540,27 @@ void OPST::int2psInsert(int a, int b){
 
 
 
-OPST::OPST(int_vector<> & w, int rangeThreshold)
+OPST::OPST(int_vector<> & w, int &rangeThreshold, double &time_wavelet)
 {
     this->w = w;
     this->n = w.size();
     // construct wavelet tree for LastCodeInt
+    auto wavelet_start = std::chrono::high_resolution_clock::now();
+
     construct_im(wt,w);
+    auto wavelet_end = std::chrono::high_resolution_clock::now();
+    time_wavelet = std::chrono::duration_cast < std::chrono::milliseconds > (wavelet_end - wavelet_start).count()*0.001;
+
     sigma = wt.sigma;
     //set the value of terminate_label
     terminate_label = (uint64_t)(this->n + 1) * (uint64_t)(this->n + 2) + 1;
     cout<<"Sigma of input = "<<sigma<<endl;
-    cout<<"Wavelet tree size = "<<wt.size()<<endl;
-    cout<<"Suffix tree size = "<< this->n <<endl;
+    cout<<"n = "<<wt.size()<<endl;
 
-    cout<<"terminate_label $ = " << terminate_label<<endl;
+    cout<<"Terminate_label $ = " << terminate_label<<endl;
 
 
     this->rangeThreshold = rangeThreshold;
-
-//    this->unordered_denseFlag = parser.get<bool>("unordered_dense");
 
 
 #ifdef CHECK
@@ -547,42 +607,13 @@ OPST::OPST(int_vector<> & w, int rangeThreshold)
 
 
 #ifdef VISUALIZATION
-    exportSuffixTreeToDot(root,"pic_nosufL", false);
-    exportSuffixTreeToDot(root,"pic_sufL", true);
+    exportSuffixTreeToDot("pic_nosufL", false);
+    exportSuffixTreeToDot("pic_sufL", true);
 #endif
 
     cout<<"The number of middle_implicit_max appeared: "<<middle_implicit_max<<endl;
 
 }
-
-
-void OPST::deleteTreeIteratively() {
-    std::stack<stNode*> toDelete;
-    toDelete.push(root);
-
-    while (!toDelete.empty()) {
-        stNode* current = toDelete.top();
-        toDelete.pop();
-
-        for (auto it = current->child.begin(); it != current->child.end();) {
-            if (it->second != nullptr){
-                toDelete.push(it->second);
-                it->second = nullptr;
-
-            }
-            it = current->child.erase(it);
-        }
-            delete current;
-
-    }
-}
-
-OPST::~OPST() {
-
-//    delete this->root;
-    deleteTreeIteratively();
-}
-
 
 
 
@@ -650,16 +681,109 @@ stNode * OPST::createNode(stNode * u, int d )
 void OPST::createLeaf( int i, stNode * u, int d )
 {
     // create a leaf node connected to u
-    // (n+2)(n+1)+1 denotes $
+    // (n+2)(n+1)+1 represents $
 
     uint64_t leaf_label = LastCodeInt( i, i+d);
     stNode *leaf  = new stNode(i, this->n-i +1, leaf_label) ;
-    assert(i == leaf->getStart());
     u->addChild( leaf, leaf_label);
 
 #ifdef VISUALIZATION
     int2psInsert( leaf->getStart(), leaf->getStart()+d);
     int2psInsert(i, i+d);
 #endif
+}
+
+
+
+
+
+void OPST::MaxTauDFS(int tau) {
+    std::stack<stNode *> stack;
+    stack.push(root);
+
+    while (!stack.empty()) {
+        stNode *top = stack.top();
+
+        if (!top->visited) {
+            // First visit to a node: add all its child nodes to the stack
+            top->visited = true;
+            for (auto &it: top->child) {
+                stack.push(it.second);
+            }
+        } else {
+            // Second visit to the node: The leafCount of all child nodes has been calculated. Now calculate the leafCount of the current node.
+            stack.pop();
+
+            if (top->child.empty()) {
+                // if it is leaf
+                top->leafCount = 1;
+            } else {
+                //Otherwise, accumulate leafCount of all child nodes
+                if (top->child.size() > 1) {
+                    bool childrenGetau = false; // if one of top's children is candidate, top can not be candidate
+                    for (auto &it: top->child) {
+                        top->leafCount += it.second->leafCount;
+                        childrenGetau = childrenGetau || (it.second->leafCount > tau - 1);
+                    }
+                    if (top->leafCount > tau - 1 && !childrenGetau) { // it satisfies condition 1 and 2 at the same time
+                        top->isCandidate = true;
+                    }
+
+                } else { // the size of children =1 indicating it is implicit node, let its leafCount = leafCount of first child
+
+
+                    top->leafCount = top->child.begin()->second->leafCount;
+
+                }
+
+
+                if (top->isCandidate && top->getSLink() != NULL) {
+                    stNode *ancestor = top->getSLink();
+                    // Propagate the leftMax upward
+                    while (ancestor != nullptr) {
+                        ancestor->leftMax = false;  // kill the node which has incoming suffix link
+                        ancestor = ancestor->getParent();
+                    }
+                }
+
+
+                //add the nodes which satisfied leftMax == true isCandidate == true
+                if (top->leftMax && top->isCandidate) {
+                    this-> MaxTauNodes.push_back(top);
+                }
+
+            }
+        }
+    }
+}
+
+
+
+
+void OPST::deleteTreeIteratively() {
+    std::stack<stNode*> toDelete;
+    toDelete.push(root);
+
+    while (!toDelete.empty()) {
+        stNode* current = toDelete.top();
+        toDelete.pop();
+
+        for (auto it = current->child.begin(); it != current->child.end();) {
+            if (it->second != nullptr){
+                toDelete.push(it->second);
+                it->second = nullptr;
+
+            }
+            it = current->child.erase(it);
+        }
+        delete current;
+
+    }
+}
+
+OPST::~OPST() {
+
+//    delete this->root;
+    deleteTreeIteratively();
 }
 

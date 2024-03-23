@@ -53,8 +53,7 @@ int main(int argc, char *argv[])
     cmdline::parser parser;
     parser.add<string>("filepath", 'f', "the path to input file", false, "discretization.txt_discretized");
     parser.add<int>("rangeThreshold", 'r', "the range of (a,b) determines call the naive or wavelet tree method", false, 512);
-//    parser.add<int>("sizeThreshold", 's', "the time relations between size and sigma determines call the naive or wavelet tree method", false, 5);
-//    parser.add<bool>("unordered_dense", 'u', "Use unordered_dense map or not", false, false);
+    parser.add<int>("tau", 't', "the value of minimal support, tau > 1", false, 2);
 
 
     parser.parse_check(argc, argv);
@@ -62,6 +61,38 @@ int main(int argc, char *argv[])
     string filename = parser.get<string>("filepath");
 
     cout<< "Suffix tree is constructed based on "<<filename<<endl;
+
+    int tau = parser.get<int>("tau");
+
+    int rangeThreshold = parser.get<int>("rangeThreshold");
+
+    double time_wavelet =0.0;
+//    int sizeThreshold = parser.get<int>("sizeThreshold");
+cout<<"--------------------------------------------Information Board--------------------------------------------------------"<<endl;
+
+
+
+    int_vector<> input_seq_vec;
+
+    // read vector from file
+    readfile(filename, input_seq_vec);
+
+    auto OP_start = std::chrono::high_resolution_clock::now();
+
+    OPST OP(input_seq_vec, rangeThreshold, time_wavelet);
+
+    auto OP_end = std::chrono::high_resolution_clock::now();
+    double time_OP = std::chrono::duration_cast < std::chrono::milliseconds > (OP_end - OP_start).count()*0.001;
+
+    auto DFS_start = std::chrono::high_resolution_clock::now();
+
+    OP.MaxTauDFS(tau);
+    auto DFS_end = std::chrono::high_resolution_clock::now();
+    double time_DFS = std::chrono::duration_cast < std::chrono::milliseconds > (DFS_end - DFS_start).count()*0.001;
+
+
+//    OP.exportSuffixTreeToDot("count", false);
+//    OP.exportSuffixTreeToDot("count2", true);
 
 #ifdef VERBOSE
 
@@ -71,12 +102,6 @@ int main(int argc, char *argv[])
 
 
 #endif
-
-    int rangeThreshold = parser.get<int>("rangeThreshold");
-//    int sizeThreshold = parser.get<int>("sizeThreshold");
-cout<<"---------------------------------------Some Parameters Info Board----------------------------------------------------"<<endl;
-cout<< "If the range of LastCode input (a, b) , namely b - a < "<<rangeThreshold <<", it utilizes the naive way to compute (p(w), s(w))"<<endl;
-
 
 #ifdef UNORDERED_DENSE
 
@@ -102,21 +127,22 @@ cout<< "If the range of LastCode input (a, b) , namely b - a < "<<rangeThreshold
 
 #endif
 
+
+    cout<<"Tau is set as "<< tau<<"."<<endl;
+
+    cout<< "If the range of LastCode input (a, b) , namely b - a < "<<rangeThreshold <<", it utilizes the naive way to compute (p(w), s(w))."<<endl;
+
+    cout<< "Runtime for wavelet tree construction  = "<<time_wavelet<<" s."<<endl;
+    cout<<"Runtime for suffix tree construction  = "<<time_OP - time_wavelet<<" s."<<endl;
+    cout<<"Total runtime for wavelet tree and suffix tree construction  = "<<time_OP<<" s."<<endl;
+    cout<<"Runtime used for find "<<tau<<"-maximal order-preserving "<<tau<<"-frequent patterns: "<<time_DFS<<" s."<<endl;
+    for (const auto& node : OP.MaxTauNodes) {
+        std::cout << "Pattern found at interval: [" << node->getStart() << ", " << node->getStart() + node->getDepth() -1 << "]" << std::endl;
+    }
+
     cout<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
-    int_vector<> input_seq_vec;
 
-    // read vector from file
-    readfile(filename, input_seq_vec);
-
-    auto OP_start = std::chrono::high_resolution_clock::now();
-
-    OPST OP(input_seq_vec, rangeThreshold);
-
-    auto OP_end = std::chrono::high_resolution_clock::now();
-    double time_OP = std::chrono::duration_cast < std::chrono::milliseconds > (OP_end - OP_start).count()*0.001;
-    cout<<"Runtime for construction  = "<<time_OP<<" s"<<endl;
-
-    cout<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
-
+// clear the vector of MaxTauNodes for future use
+    OP.MaxTauNodes.clear();
     return 0;
 }

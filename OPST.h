@@ -45,62 +45,53 @@ private:
     stNode * root;
     int_vector<> w;
     int n; // the length of w
-    int num;
-//    map<uint64_t, stNode*> leaves;
     unordered_map<uint64_t, pair<int, int>> int2ps;
-//    unordered_map<pair<int, int>,uint64_t> LastcodeIntMap;
 
     int rangeThreshold;
-    int sizeThreshold;
 
     DerivedWTInt wt;
     int sigma;
     uint64_t terminate_label;
     int middle_implicit_max = 0;
-    bool flagSize;
-//    bool unordered_denseFlag;
-//    void bfs_leaves();
 
 public:
-    explicit OPST( int_vector<> & w, int rangeThreshold);
-    void int2psInsert(int a, int b);
+    explicit OPST( int_vector<> & w, int &rangeThreshold, double &time_wavelet);
 
 
+//predecessor
     int Max(const sdsl::wt_int<>::node_type& u, int a, int b);
     int predecessorNV(int a, int b);
     int predecessorWT(const sdsl::wt_int<>::node_type& u, int a, int b);
 
-
-
-
+//successor
     int Min(const sdsl::wt_int<>::node_type& u, int a, int b);
     int successorNV(int a, int b);
     int successorWT(const sdsl::wt_int<>::node_type& u, int a, int b);
 
-
-//    pair<int, int>  LastCode(int a, int b);
-//    uint64_t LastCodeInt(int a, int b);
-
+// LastCodeInt
     uint64_t LastCodeInt(int a, int b);
     pair<int, int>  LastCode( int a, int b);
 
 
 
     stNode * createNode(  stNode * u, int d );
-//    stNode * createNodeIm(stNode * u, int d );
-
-
-//    stNode * createBranch( stNode * u, int i, int d );
     void createLeaf(int i, stNode * u, int d );
-//    stNode * createNode_trim(stNode * u, int d );
     void ComputeSuffixLink( stNode * u );
-//    int forward_search( string x );
-//    stNode * forward_search_node( stNode * s, int l );
-//    void trimST( int * ME );
-//    void printLeaves();
-//    static void deleteTree(stNode * root);
-    void exportSuffixTreeToDot(stNode * root, const std::string& filename,bool suf);
+
+
+    // Visualization
+    void int2psInsert(int a, int b);
+    void exportSuffixTreeToDot(const std::string& filename,bool suf);
     void generateDot(stNode* node, std::ofstream& dotFile, bool suf);
+    void generateCount(stNode* node, std::ofstream& dotFile, bool suf);
+
+
+
+    // DFS
+    void MaxTauDFS(int tau);
+    std::vector<stNode*> MaxTauNodes;
+
+
     void deleteTreeIteratively();
     ~OPST();
 };
