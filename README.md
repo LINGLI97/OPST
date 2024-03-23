@@ -18,10 +18,11 @@ It will run on ecg_1_to_40.txt_merged20.txt ~ ecg_1_to_40.txt_merged100.txt, cor
 You can easily specify parameters, for example:
 
 ```bash 
-./my_program -f ecg_1_to_40.txt_merged20.txt -r 256 
+./my_program -f ecg_1_to_40.txt_merged20.txt -r 256 -t 2
 ```
-
--r specifies  "the range of (a,b) determines calling the naive or wavelet tree method", the default value is 512.
+-f specifies the file path;
+-r specifies  "the range of (a,b) determines calling the naive or wavelet tree method", the default value is 512;
+-t specifies the value of minimal support, tau > 1.
 
 ## Datasets
 We uploaded the datasets to [Google Drive](https://drive.google.com/file/d/1eAJr_UHhCpWPiZ_a-rC9WOwWO3Rf3txp/view).
