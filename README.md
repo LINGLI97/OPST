@@ -26,22 +26,25 @@ You can easily specify parameters, for example:
 
 ## Print Out Information
 
-Suffix tree is constructed based on discretization.txt_discretized  
+Suffix tree is constructed based on w = 12442551 
 --------------------------------------------Information Board--------------------------------------------------------  
 Sigma of input = 4  
 n = 8  
 Terminate_label $ = 91  
-The number of middle_implicit_max appeared: 1  
+The number of middle_implicit_ma  x appeared: 1  
 In succinct log mode.  
 Using std::unordered_map  
 Not using safe check  
-If the range of LastCode input (a, b) , namely b - a < 512, it utilizes the naive way to compute (p(w), s(w))  
-Runtime for wavelet tree construction  = 0.017 s  
-Runtime for suffix tree construction  = 0 s  
-Total runtime for wavelet tree and suffix tree construction  = 0.017 s  
-Runtime used for find 2-maximal order-preserving 2-frequent patterns: 0  
+Tau is set as 2.  
+If the range of LastCode input (a, b) , namely b - a < 512, it utilizes the naive way to compute (p(w), s(w)).  
+Runtime for wavelet tree construction  = 0.009 s.  
+Runtime for suffix tree construction  = 0 s.  
+Total runtime for wavelet tree and suffix tree construction  = 0.009 s.  
+Runtime used for find 2-maximal order-preserving 2-frequent patterns: 0 s.  
 Pattern found at interval: [1, 3]  
 Pattern found at interval: [2, 4]  
+
+
 
 
 
