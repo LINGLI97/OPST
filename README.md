@@ -20,9 +20,32 @@ You can easily specify parameters, for example:
 ```bash 
 ./my_program -f ecg_1_to_40.txt_merged20.txt -r 256 -t 2
 ```
--f specifies the file path;
--r specifies  "the range of (a,b) determines calling the naive or wavelet tree method", the default value is 512;
+-f specifies the file path; 
+-r specifies  "the range of (a,b) determines calling the naive or wavelet tree method", the default value is 512; 
 -t specifies the value of minimal support, tau > 1.
+
+## Print Out Info
+
+Suffix tree is constructed based on discretization.txt_discretized
+--------------------------------------------Information Board--------------------------------------------------------
+Sigma of input = 4
+n = 8
+Terminate_label $ = 91
+The number of middle_implicit_max appeared: 1
+In succinct log mode.
+Using std::unordered_map
+Not using safe check
+If the range of LastCode input (a, b) , namely b - a < 512, it utilizes the naive way to compute (p(w), s(w))
+Runtime for wavelet tree construction  = 0.017 s
+Runtime for suffix tree construction  = 0 s
+Total runtime for wavelet tree and suffix tree construction  = 0.017 s
+Runtime used for find 2-maximal order-preserving 2-frequent patterns: 0
+Pattern found at interval: [1, 3]
+Pattern found at interval: [2, 4]
+
+
+
+
 
 ## Datasets
 We uploaded the datasets to [Google Drive](https://drive.google.com/file/d/1eAJr_UHhCpWPiZ_a-rC9WOwWO3Rf3txp/view).
