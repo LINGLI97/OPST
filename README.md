@@ -26,7 +26,7 @@ You can easily specify parameters, for example:
 
 ## Print Out Information
 
-Suffix tree is constructed based on w = 12442551 
+Suffix tree is constructed based on w = 12442551   
 --------------------------------------------Information Board--------------------------------------------------------  
 Sigma of input = 4  
 n = 8  
