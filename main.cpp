@@ -87,6 +87,7 @@ cout<<"--------------------------------------------Information Board------------
     auto DFS_start = std::chrono::high_resolution_clock::now();
 
     OP.MaxTauDFS(tau);
+    OP.FindNodes();
     auto DFS_end = std::chrono::high_resolution_clock::now();
     double time_DFS = std::chrono::duration_cast < std::chrono::milliseconds > (DFS_end - DFS_start).count()*0.001;
 

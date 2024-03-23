@@ -433,7 +433,7 @@ void OPST::generateDot(stNode* node, std::ofstream& dotFile, bool suf) {
     std::vector<stNode*> children = node->allChild();
     if (children.empty()) {
 
-            dotFile << "\"" << node << "\" [shape=ellipse, style=filled, fillcolor=green, label=\" Start: " << node->getStart() << "\"];\n";
+//            dotFile << "\"" << node << "\" [shape=ellipse, style=filled, fillcolor=green, label=\" Start: " << node->getStart() << "\"];\n";
 
     }
     if (!children.empty()){
@@ -499,8 +499,8 @@ void OPST::exportSuffixTreeToDot(const std::string& filename,bool suf) {
 
 
 
-//    generateDot(root, dotFile,suf);  //without leafCount and flag info
-    generateCount(root, dotFile,suf);  //with leafCount and flag info
+    generateDot(root, dotFile,suf);  //without leafCount and flag info
+//    generateCount(root, dotFile,suf);  //with leafCount and flag info
 
 
     dotFile << "}\n";
@@ -737,25 +737,62 @@ void OPST::MaxTauDFS(int tau) {
                 }
 
 
+
                 if (top->isCandidate && top->getSLink() != NULL) {
+                    // kill the node which has incoming suffix link
                     stNode *ancestor = top->getSLink();
+
                     // Propagate the leftMax upward
                     while (ancestor != nullptr) {
-                        ancestor->leftMax = false;  // kill the node which has incoming suffix link
-                        ancestor = ancestor->getParent();
+                        if (ancestor->leftMax){
+                            ancestor->leftMax = false;  // kill the node which has incoming suffix link
+                            ancestor = ancestor->getParent();
+                        }else{
+                            break;
+                        }
+
                     }
                 }
 
-
-                //add the nodes which satisfied leftMax == true isCandidate == true
-                if (top->leftMax && top->isCandidate) {
-                    this-> MaxTauNodes.push_back(top);
-                }
 
             }
         }
     }
 }
+
+
+
+
+
+
+void OPST::FindNodes() {
+    std::stack<stNode*> stack;
+    stack.push(root);
+
+    while (!stack.empty()) {
+        stNode* top = stack.top();
+
+
+        if (!top->visitedTwice) {
+            top->visitedTwice = true; // Mark as visited
+            // Push the current node onto the stack again so that it can be accessed again after all child nodes have been processed
+
+            for (auto &it: top->child) {
+                    stack.push(it.second);
+            }
+        } else {
+            //When all child nodes have been processed, check whether the current node meets the conditions
+            stack.pop();
+            if (top->isCandidate && top->leftMax) {
+                MaxTauNodes.push_back(top); // Add to result vector
+            }
+        }
+    }
+}
+
+
+
+
 
 
 

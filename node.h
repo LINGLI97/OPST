@@ -37,6 +37,7 @@ public:
     bool isCandidate;
     bool leftMax;
     bool visited;
+    bool visitedTwice;
     int leafCount;
 
 

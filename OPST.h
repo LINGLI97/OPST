@@ -89,6 +89,8 @@ public:
 
     // DFS
     void MaxTauDFS(int tau);
+    void FindNodes();
+
     std::vector<stNode*> MaxTauNodes;
 
 

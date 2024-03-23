@@ -18,6 +18,7 @@ stNode::stNode()
     this->slink = NULL;
 
     this->visited = false;
+    this->visitedTwice = false;
     this->isCandidate = false;
     this->leftMax = true;
     this->leafCount = 0;
@@ -33,6 +34,7 @@ stNode::stNode(uint64_t terminate_label)
     this->parent = NULL;
     this->slink = NULL;
     this->visited = false;
+    this->visitedTwice = false;
     this->isCandidate = false;
     this->leftMax = true;
     this->leafCount = 0;
@@ -46,6 +48,7 @@ stNode::stNode( int i, int d, uint64_t l)
     this->parent = NULL;
     this->slink = NULL;
     this->visited = false;
+    this->visitedTwice = false;
     this->isCandidate = false;
     this->leftMax = true;
     this->leafCount = 0;
