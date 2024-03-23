@@ -26,7 +26,7 @@ You can easily specify parameters, for example:
 
 ## Print Out Info
 
-Suffix tree is constructed based on discretization.txt_discretized
+Suffix tree is constructed based on discretization.txt_discretized  
 --------------------------------------------Information Board--------------------------------------------------------
 Sigma of input = 4
 n = 8
