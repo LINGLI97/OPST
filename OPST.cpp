@@ -739,7 +739,6 @@ void OPST::MaxTauDFS(int tau) {
 
 
                 if (top->isCandidate && top->getSLink() != NULL) {
-                    // kill the node which has incoming suffix link
                     stNode *ancestor = top->getSLink();
 
                     // Propagate the leftMax upward
@@ -748,7 +747,7 @@ void OPST::MaxTauDFS(int tau) {
                             ancestor->leftMax = false;  // kill the node which has incoming suffix link
                             ancestor = ancestor->getParent();
                         }else{
-                            break;
+                            break;  // if it finds a ancestor which has been killed, it indicates the more distant ancestors have been killed before. So it breaks
                         }
 
                     }
