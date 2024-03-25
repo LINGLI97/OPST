@@ -35,6 +35,34 @@ $(TARGET): $(OBJECTS)
 clean:
 	rm -f $(TARGET) $(OBJECTS)
 
+
+
+
+
+#Test random instances for two different methods
+
+TEST_SOURCES = Test.cpp node.cpp OPST.cpp
+TEST_OBJECTS = $(TEST_SOURCES:.cpp=.o)
+TEST_TARGET = run_tests
+
+
+test: $(TEST_TARGET)
+
+
+$(TEST_TARGET): $(TEST_OBJECTS)
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean_test:
+	rm -f $(TEST_TARGET) $(TEST_OBJECTS)
+
+
+
+
 .PHONY: all clean
+
+
 
 
