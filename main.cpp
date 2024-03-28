@@ -184,6 +184,7 @@ int main(int argc, char *argv[])
 
     }else if(method==1){
         cout<<"Using n^2*log(n) method"<<endl;
+
         vector<int> input_vec;
         readfile(filename, input_vec);
         auto quadratic_start = std::chrono::high_resolution_clock::now();
@@ -191,6 +192,7 @@ int main(int argc, char *argv[])
         int numQuadratic= quadraticMethod(input_vec,tau);
         auto quadratic_end = std::chrono::high_resolution_clock::now();
         double time_quadratic = std::chrono::duration_cast < std::chrono::milliseconds > (quadratic_end - quadratic_start).count() * 0.001;
+        cout<<"The input size: "<<input_vec.size()<<endl;
 
         cout<<"Runtime used for find "<<tau<<"-maximal order-preserving "<<tau<<"-frequent patterns: "<<time_quadratic<<" s."<<endl;
         cout<<"The number of found maximal patterns is "<<numQuadratic<<endl;
@@ -206,6 +208,8 @@ int main(int argc, char *argv[])
         auto Cubic_end = std::chrono::high_resolution_clock::now();
 
         double time_Cubic = std::chrono::duration_cast < std::chrono::milliseconds > (Cubic_end - Cubic_start).count() * 0.001;
+        cout<<"The input size: "<<input_vec.size()<<endl;
+
         cout<<"Runtime used for find "<<tau<<"-maximal order-preserving "<<tau<<"-frequent patterns: "<<time_Cubic<<" s."<<endl;
         cout<<"The number of found maximal patterns is "<<numCubic<<endl;
 
