@@ -70,7 +70,7 @@ double OPSTMethod(std::vector<int> &w, int &tau){
 
 
 int main() {
-    int n = 16; // 向量的长度
+    int n = 16; 
     std::vector<int> sigma = {1, 2, 3}; // sigma
     std::vector<int> current;
     std::vector<std::vector<int>> vectors;  // size = 3^16
