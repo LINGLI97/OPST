@@ -61,6 +61,33 @@ clean_test:
 
 
 
+
+
+
+
+Ratio_SOURCES = exhaustive.cpp node.cpp OPST.cpp
+Ratio_OBJECTS = $(Ratio_SOURCES:.cpp=.o)
+Ratio_TARGET = run_ratio
+
+
+ratio: $(Ratio_TARGET)
+
+$(Ratio_TARGET): $(Ratio_OBJECTS)
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean_ratio:
+	rm -f $(Ratio_TARGET) $(Ratio_OBJECTS)
+
+
+
+
+
+
+
+
 .PHONY: all clean
 
 

@@ -129,9 +129,10 @@ cout<<"--------------------------------------------Information Board------------
 
 #endif
 
-
+    cout<<"Sigma of input = "<<OP.sigma<<endl;
+    cout<<"n = "<<OP.n<<endl;
+    cout<<"Terminate_label $ = " << OP.terminate_label<<endl;
     cout<<"Tau is set as "<< tau<<"."<<endl;
-
     cout<< "If the range of LastCode input (a, b) , namely b - a < "<<rangeThreshold <<", it utilizes the naive way to compute (p(w), s(w))."<<endl;
 
     cout<< "Runtime for wavelet tree construction  = "<<time_wavelet<<" s."<<endl;

@@ -554,10 +554,6 @@ OPST::OPST(int_vector<> & w, int &rangeThreshold, double &time_wavelet)
     sigma = wt.sigma;
     //set the value of terminate_label
     terminate_label = (uint64_t)(this->n + 1) * (uint64_t)(this->n + 2) + 1;
-    cout<<"Sigma of input = "<<sigma<<endl;
-    cout<<"n = "<<wt.size()<<endl;
-
-    cout<<"Terminate_label $ = " << terminate_label<<endl;
 
 
     this->rangeThreshold = rangeThreshold;

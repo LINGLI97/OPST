@@ -49,8 +49,8 @@ private:
     int rangeThreshold;
 
     DerivedWTInt wt;
-    int sigma;
-    uint64_t terminate_label;
+
+
 
 
 public:
@@ -93,8 +93,8 @@ public:
     std::vector<stNode*> MaxTauNodes;
     int explicit_k = 0;
     int n; // the length of w
-
-
+    uint64_t terminate_label;
+    int sigma;
     void deleteTreeIteratively();
     ~OPST();
 };
