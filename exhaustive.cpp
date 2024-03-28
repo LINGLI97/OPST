@@ -81,7 +81,7 @@ int main() {
         double currentRatio = OPSTMethod(vec,tau);
          if(currentRatio > worstRatio){
              worstRatio = currentRatio;
-             cout<<currentRatio<<endl;
+             cout<<"currentRatio: "<<currentRatio<<endl;
          }
     }
     cout<< "The worst ratio k/n = "<<worstRatio<<endl;
