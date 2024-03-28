@@ -138,6 +138,11 @@ cout<<"--------------------------------------------Information Board------------
     cout<<"Runtime for suffix tree construction  = "<<time_OP - time_wavelet<<" s."<<endl;
     cout<<"Total runtime for wavelet tree and suffix tree construction  = "<<time_OP<<" s."<<endl;
     cout<<"Runtime used for find "<<tau<<"-maximal order-preserving "<<tau<<"-frequent patterns: "<<time_DFS<<" s."<<endl;
+    cout<<"Total runtime: "<<time_OP+time_DFS<<" s."<<endl;
+
+    cout<<"The total number of explicit nodes k we traverse: "<<OP.explicit_k<<endl;
+    cout<<"The ratio of explicit nodes k / n: "<<(double)OP.explicit_k/ (double )OP.n<<endl;
+
     cout<<"The number of found patterns is "<<OP.MaxTauNodes.size()<<endl;
     if (parser.get<bool>("printPattern")){
         for (const auto& node : OP.MaxTauNodes) {

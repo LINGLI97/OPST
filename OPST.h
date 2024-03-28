@@ -44,7 +44,6 @@ class OPST
 private:
     stNode * root;
     int_vector<> w;
-    int n; // the length of w
     unordered_map<uint64_t, pair<int, int>> int2ps;
 
     int rangeThreshold;
@@ -52,7 +51,7 @@ private:
     DerivedWTInt wt;
     int sigma;
     uint64_t terminate_label;
-    int middle_implicit_max = 0;
+
 
 public:
     explicit OPST( int_vector<> & w, int &rangeThreshold, double &time_wavelet);
@@ -92,6 +91,8 @@ public:
     void FindNodes();
 
     std::vector<stNode*> MaxTauNodes;
+    int explicit_k = 0;
+    int n; // the length of w
 
 
     void deleteTreeIteratively();

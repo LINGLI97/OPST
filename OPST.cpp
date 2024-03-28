@@ -611,7 +611,6 @@ OPST::OPST(int_vector<> & w, int &rangeThreshold, double &time_wavelet)
     exportSuffixTreeToDot("pic_sufL", true);
 #endif
 
-    cout<<"The number of middle_implicit_max appeared: "<<middle_implicit_max<<endl;
 
 }
 
@@ -621,15 +620,12 @@ void OPST::ComputeSuffixLink( stNode * u )
 {
     int d = u->getDepth();
     stNode * u_copy = u;
-    int middle_implicit_tmp = 0;
 
     //count the num of implicit node between two branching nodes
     while (!u_copy->getParent()->getSLink()){
         u_copy = u_copy->getParent();
-        middle_implicit_tmp += 1;
-    }
-    if (middle_implicit_tmp > middle_implicit_max){
-        middle_implicit_max = middle_implicit_tmp;
+        explicit_k ++;
+        // count the explicit nodes we traverse
     }
 
     stNode * v = u_copy->getParent()->getSLink();
@@ -643,7 +639,8 @@ void OPST::ComputeSuffixLink( stNode * u )
 #endif
         // go down
         v = v->getChild( LastCodeInt(u->getStart()+1, u->getStart() + v->getDepth() + 1) );
-
+        explicit_k ++;
+        // count the explicit nodes we traverse
     }
     if ( v->getDepth() > d-1 )
     {
