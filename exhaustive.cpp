@@ -70,22 +70,45 @@ double OPSTMethod(std::vector<int> &w, int &tau){
 
 
 int main() {
-    int n = 16; 
-    std::vector<int> sigma = {1, 2, 3}; // sigma
+
+
+    cmdline::parser parser;
+    parser.add<int>("size", 'n', "the length of the input", false, 16);
+    parser.add<int>("sigma", 's', "the size of the sigma", false, 3);
+    std::vector<int> sigmaVec;
+
+    int n = parser.get<int>("size");
+    int sigma = parser.get<int>("sigma");
+
+    for (int i = 1; i<sigma+1; i++){
+
+        sigmaVec.push_back(i);
+    }
+    cout<< "n = "<<n<<"; sigma = "<<sigmaVec.size()<<endl;
     std::vector<int> current;
-    std::vector<std::vector<int>> vectors;  // size = 3^16
+    std::vector<std::vector<int>> vectors;  // size = sigma^n
     int tau =2;
     double worstRatio = -1;
-    generateVectors(n, sigma, current, vectors);
+    std::vector<int> worstVec;
+
+    generateVectors(n, sigmaVec, current, vectors);
     for (auto &vec: vectors){
         double currentRatio = OPSTMethod(vec,tau);
          if(currentRatio > worstRatio){
              worstRatio = currentRatio;
-             cout<<"currentRatio: "<<currentRatio<<endl;
+             worstVec.clear();
+             worstVec = vec;
+             cout<<"Find worse ratio: "<<currentRatio<<" ; Its vector is ";
+             for (auto &ele: worstVec){
+                 cout<<ele<<" ";
+             }
+             cout<<endl;
          }
     }
-    cout<< "The worst ratio k/n = "<<worstRatio<<endl;
-
-
+    cout<< "The worst ratio k/n = "<<worstRatio<<" Its worst vector is ";
+    for (auto &ele: worstVec){
+        cout<<ele<<" ";
+    }
+    cout<<endl;
     return 0;
 }
