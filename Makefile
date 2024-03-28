@@ -20,7 +20,7 @@ LIBS = -lsdsl -ldivsufsort -ldivsufsort64
 # CXXFLAGS += -I/path/to/sdsl/include
 # LDFLAGS += -L/path/to/sdsl/lib
 
-SOURCES = main.cpp node.cpp OPST.cpp
+SOURCES = main.cpp node.cpp OPST.cpp baseline.cpp utils.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 TARGET = my_program
 
@@ -41,7 +41,7 @@ clean:
 
 #Test random instances for two different methods
 
-TEST_SOURCES = Test.cpp node.cpp OPST.cpp
+TEST_SOURCES = Test.cpp node.cpp OPST.cpp utils.cpp
 TEST_OBJECTS = $(TEST_SOURCES:.cpp=.o)
 TEST_TARGET = run_tests
 

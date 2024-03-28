@@ -18,12 +18,14 @@ It will run on ecg_1_to_40.txt_merged20.txt ~ ecg_1_to_40.txt_merged100.txt, cor
 You can easily specify parameters, for example:
 
 ```bash 
-./my_program -f ecg_1_to_40.txt_merged20.txt -r 256 -t 2 -p 1
+./my_program -f ecg_1_to_40.txt_merged20.txt -m 0 -r 256 -t 2 -p 1
 ```
-The `-f` option determines specifies the file path;   
+
+The `-f` option determines the file path;   
+The `-m` option determines to use which method. Three methods: 0 -> OPST; 1 -> quadraticMethod; 2 -> cubicMethod. The defalut value is 0;
 The `-r` option determines   "the range of (a,b) determines calling the naive or wavelet tree method". The default value is 512;   
 The `-t` option determines  the value of minimal support, tau > 1. The default value is 512.  
-The `-p` option determines whether to print the found patterns. The default value is 0.
+The `-p` option determines whether to print the all found maximal patterns. The default value is 0.
 
 
 
