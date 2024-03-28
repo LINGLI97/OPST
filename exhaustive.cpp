@@ -69,12 +69,14 @@ double OPSTMethod(std::vector<int> &w, int &tau){
 
 
 
-int main() {
+int main(int argc, char *argv[]) {
 
 
     cmdline::parser parser;
     parser.add<int>("size", 'n', "the length of the input", false, 16);
     parser.add<int>("sigma", 's', "the size of the sigma", false, 3);
+    parser.parse_check(argc, argv);
+
     std::vector<int> sigmaVec;
 
     int n = parser.get<int>("size");
