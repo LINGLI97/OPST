@@ -11,22 +11,7 @@ using namespace sdsl;
 #include <random>
 #include <chrono>
 
-
-void generateVectors(int n, const std::vector<int>& sigma, std::vector<int>& current, std::vector<std::vector<int>>& result) {
-    if (n == 0) {
-
-        result.push_back(current);
-        return;
-    }
-
-    for (int i = 0; i < sigma.size(); ++i) {
-
-        current.push_back(sigma[i]);
-        generateVectors(n - 1, sigma, current, result);
-        current.pop_back();
-    }
-}
-
+double worstRatio = -1;
 
 
 void readfile(int_vector<> &input_seq_vec,std::vector<int> &w){
@@ -41,7 +26,8 @@ void readfile(int_vector<> &input_seq_vec,std::vector<int> &w){
 
 
 
-double OPSTMethod(std::vector<int> &w, int &tau){
+
+double OPSTMethod(std::vector<int> &w){
     int_vector<> input_seq_vec;
 
     // read vector from file
@@ -54,8 +40,8 @@ double OPSTMethod(std::vector<int> &w, int &tau){
 
     OPST OP(input_seq_vec, rangeThreshold, time_wavelet);
 
-    OP.MaxTauDFS(tau);
-    OP.FindNodes();
+//    OP.MaxTauDFS(tau);
+//    OP.FindNodes();
 //    cout<<"The number of found patterns is "<<OP.MaxTauNodes.size()<<endl;
 
 
@@ -63,6 +49,40 @@ double OPSTMethod(std::vector<int> &w, int &tau){
 
 
 }
+
+
+
+
+void generateVectors(int n, const std::vector<int>& sigma, std::vector<int>& current) {
+    if (n == 0) {
+        double currentRatio = OPSTMethod(current);
+
+
+
+        if(currentRatio > worstRatio) {
+            std::vector<int> worstVec;
+            worstRatio = currentRatio;
+            worstVec.clear();
+            cout << "Find worse ratio: " << currentRatio << "; its vector is ";
+            for (auto &ele: current) {
+                cout << ele << " ";
+            }
+            cout << endl;
+        }
+//        result.push_back(current);
+        return;
+    }
+
+    for (int i = 0; i < sigma.size(); ++i) {
+
+        current.push_back(sigma[i]);
+        generateVectors(n - 1, sigma, current);
+        current.pop_back();
+    }
+}
+
+
+
 
 
 
@@ -88,29 +108,47 @@ int main(int argc, char *argv[]) {
     }
     cout<< "n = "<<n<<"; sigma = "<<sigmaVec.size()<<endl;
     std::vector<int> current;
-    std::vector<std::vector<int>> vectors;  // size = sigma^n
+//    std::vector<std::vector<int>> vectors;  // size = sigma^n
     int tau =2;
-    double worstRatio = -1;
-    std::vector<int> worstVec;
+//    double worstRatio = -1;
+//    std::vector<int> worstVec;
 
-    generateVectors(n, sigmaVec, current, vectors);
-    for (auto &vec: vectors){
-        double currentRatio = OPSTMethod(vec,tau);
-         if(currentRatio > worstRatio){
-             worstRatio = currentRatio;
-             worstVec.clear();
-             worstVec = vec;
-             cout<<"Find worse ratio: "<<currentRatio<<" ; Its vector is ";
-             for (auto &ele: worstVec){
-                 cout<<ele<<" ";
-             }
-             cout<<endl;
-         }
-    }
-    cout<< "The worst ratio k/n = "<<worstRatio<<" Its worst vector is ";
-    for (auto &ele: worstVec){
-        cout<<ele<<" ";
-    }
-    cout<<endl;
+    generateVectors(n, sigmaVec, current);
+
+//    for (auto &vec: vectors){
+//        double currentRatio = OPSTMethod(vec);
+//         if(currentRatio > worstRatio){
+//             worstRatio = currentRatio;
+//             worstVec.clear();
+//             worstVec = vec;
+//             cout<<"Find worse ratio: "<<currentRatio<<"; its vector is ";
+//             for (auto &ele: worstVec){
+//                 cout<<ele<<" ";
+//             }
+//             cout<<endl;
+//         }
+//    }
+//    cout<< "The worst ratio k/n = "<<worstRatio<<"; its worst vector is ";
+//    for (auto &ele: worstVec){
+//        cout<<ele<<" ";
+//    }
+//    cout<<endl;
+
+
+
+
+
+
+//    const size_t alphabetSize = 10000000; // 5 million unique numbers
+//    const size_t vectorSize = 2 * alphabetSize; // 10 million total numbers
+//    std::vector<int> vec;
+//
+//    int cnt = 0;
+//    for (int i=1; i<alphabetSize+1; i++){
+//        vec.push_back(i);
+//        vec.push_back(i);
+//    }
+//    double currentRatio = OPSTMethod(vec);
+//    cout<<"The ratio: "<<currentRatio<<endl;
     return 0;
 }
