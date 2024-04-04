@@ -18,10 +18,11 @@ stNode::stNode()
     this->slink = NULL;
 
     this->visited = false;
-    this->visitedTwice = false;
     this->isCandidate = false;
     this->leftMax = true;
     this->leafCount = 0;
+    this-> leftDiverse = false;
+
 }
 
 
@@ -32,12 +33,16 @@ stNode::stNode(uint64_t terminate_label)
     this->depth = 0;
     this->label = terminate_label;
     this->parent = NULL;
+
     this->slink = NULL;
     this->visited = false;
-    this->visitedTwice = false;
     this->isCandidate = false;
     this->leftMax = true;
     this->leafCount = 0;
+    this-> leftDiverse = false;
+
+
+
 }
 
 stNode::stNode( int i, int d, uint64_t l)
@@ -46,12 +51,16 @@ stNode::stNode( int i, int d, uint64_t l)
     this->depth = d;
     this->label = l;
     this->parent = NULL;
+
     this->slink = NULL;
     this->visited = false;
-    this->visitedTwice = false;
     this->isCandidate = false;
     this->leftMax = true;
     this->leafCount = 0;
+    this-> leftDiverse = false;
+
+
+
 }
 
 int stNode::getStart()
@@ -112,9 +121,7 @@ void stNode::addChild( stNode * childNode, uint64_t l)
     if ( it == this->child.end() )
     {
         pair <uint64_t , stNode*> insertChild( l, childNode );
-
-
-        this->child.insert( insertChild );
+        this->child.insert( insertChild);
     }
     else
     {

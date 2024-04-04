@@ -18,14 +18,18 @@ It will run on ecg_1_to_40.txt_merged20.txt ~ ecg_1_to_40.txt_merged100.txt, cor
 You can easily specify parameters, for example:
 
 ```bash 
-./my_program -f ecg_1_to_40.txt_merged20.txt -m 0 -r 256 -t 2 -p 1
+./my_program --filepath=ecg_1_to_40.txt_discretized --OPST=1 --MaximalQuadratic=1 --ClosedQuadratic=1 --MaximalCubic=1 --ClosedCubic=1 --tau=2 --printPattern=0
 ```
 
-The `-f` option determines the file path;   
-The `-m` option determines to use which method. Three methods: 0 -> OPST; 1 -> quadraticMethod; 2 -> cubicMethod. The defalut value is 0;  
-The `-r` option determines   "the range of (a,b) determines calling the naive or wavelet tree method". The default value is 512;   
-The `-t` option determines  the value of minimal support, tau > 1. The default value is 512;  
-The `-p` option determines whether to print the all found maximal patterns. The default value is 0.
+The `-f` /`--filepath` option determines the file path;   
+The `--OPST` option determines to enable maximal and closed patterns mining of OPST; the defalut value is true;  
+The `--MaximalQuadratic` option determines to enable maximal patterns mining of the quadratic baseline; the defalut value is false;  
+The `--ClosedQuadratic` option determines to enable closed patterns mining of the quadratic baseline; the defalut value is false;  
+The `--MaximalCubic` option determines to enable maximal patterns mining of the cubic baseline; the defalut value is false;  
+The `--ClosedCubic` option determines to enable closed patterns mining of the cubic baseline; the defalut value is false;  
+
+The `-t`/`--tau` option determines  the value of minimal support, tau > 1. The default value is 512;  
+The `-p`/`--printPattern` option determines whether to print the all found maximal patterns. The default value is false.
 
 
 
@@ -36,15 +40,15 @@ Suffix tree is constructed based on w = 12442551
 Sigma of input = 4  
 n = 8  
 Terminate_label $ = 91  
-The number of middle_implicit_ma  x appeared: 1  
+The number of middle_implicit_ma x appeared: 1  
 In succinct log mode.  
 Using std::unordered_map  
 Not using safe check  
 Tau is set as 2.  
 If the range of LastCode input (a, b) , namely b - a < 512, it utilizes the naive way to compute (p(w), s(w)).  
-Runtime for wavelet tree construction  = 0.009 s.  
-Runtime for suffix tree construction  = 0 s.  
-Total runtime for wavelet tree and suffix tree construction  = 0.009 s.  
+Runtime for wavelet tree construction = 0.009 s.  
+Runtime for suffix tree construction = 0 s.  
+Total runtime for wavelet tree and suffix tree construction = 0.009 s.  
 Runtime used for find 2-maximal order-preserving 2-frequent patterns: 0 s.  
 The number of found patterns is 2  
 Pattern found at interval: [1, 3]  

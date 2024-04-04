@@ -15,7 +15,6 @@
 using namespace std;
 //using namespace sdsl;
 
-
 int DerivedWTInt::rank_bit( value_type c, int i, size_type offset) const{
 
     size_type ones_before_i   = m_tree_rank(offset + i + 1) - m_tree_rank(offset);
@@ -97,6 +96,11 @@ int OPST::Max(const sdsl::wt_int<>::node_type& u, int a, int b) {
 
 int OPST::predecessorWT(const sdsl::wt_int<>::node_type& u, int a, int b) {
 
+//    if (b> this->n-1){
+//        b = this->n-1;
+//        cout<<"here"<<endl;
+//    }
+
     if (a == b) return NA; // predecessor does not exist
 
     if (!wt.is_leaf(u)) {
@@ -150,6 +154,13 @@ int OPST::predecessorWT(const sdsl::wt_int<>::node_type& u, int a, int b) {
 
 int OPST::predecessorNV(int a, int b) {
     if (w.empty()) return -1; // Handle empty vector case
+//
+//    if (b> this->n-1){
+//        cout<<b<<endl;
+//
+//        b = this->n-1;
+//    }
+
 
     int aimElement = w[b];
     int predecessorIndex = NA; // Default to "not found"
@@ -217,6 +228,8 @@ int OPST::Min(const sdsl::wt_int<>::node_type& u, int a, int b) {
 // Successor func: pos = NA <=> successor does not exist
 int OPST::successorWT(const sdsl::wt_int<>::node_type& u, int a, int b) {
 
+
+
     if (a == b) return NA; // successor does not exist
 
     if (!wt.is_leaf(u)) {
@@ -271,6 +284,8 @@ int OPST::successorWT(const sdsl::wt_int<>::node_type& u, int a, int b) {
 int OPST::successorNV(int a, int b) {
     if (w.empty()) return -1; // Handle empty vector case
 
+
+
     int aimElement = w[b];
     int successorIndex = NA; // Default to "not found"
 
@@ -307,14 +322,19 @@ int OPST::successorNV(int a, int b) {
 
 
 
-
 pair<int, int> OPST:: LastCode(int a , int b){
 
-#ifdef CHECK
-    assert(make_pair(predecessorNV(a, b), successorNV(a,b)) == make_pair(predecessorWT(wt.root(), a-1, b-1), successorWT(wt.root(), a-1, b-1)));
-#endif
-// (double) n < rangeThreshold * log(sigma) need to be changed
-    if ( b -a < rangeThreshold){
+//#ifdef CHECK
+
+
+//#endif
+
+//    cout<< "Inside: "<<a <<" "<< b<<endl;
+//    if ( b -a < rangeThreshold){
+
+        if (b > this->n -1){
+            b = this->n -1;
+        }
         int predecessor_local = predecessorNV(a, b);
         int successor_local =  successorNV(a,b);
         if (predecessor_local != NA){
@@ -325,23 +345,71 @@ pair<int, int> OPST:: LastCode(int a , int b){
             successor_local = successor_local - a;
         }
 
-        return make_pair(predecessor_local,successor_local);
 
 
-    } else{
 
-        int predecessor_local = predecessorWT(wt.root(), a-1, b-1);
-        int successor_local = successorWT(wt.root(), a-1, b-1);
-        if (predecessor_local != NA){
-            predecessor_local = predecessor_local - a;
+
+
+
+//        return make_pair(predecessor_local,successor_local);
+
+
+
+//        cout<<"2"<<endl;
+
+
+        int predecessor_local1 = predecessorWT(wt.root(), a-1, b-1);
+        int successor_local1 = successorWT(wt.root(), a-1, b-1);
+        if (predecessor_local1 != NA){
+            predecessor_local1 = predecessor_local1 - a;
         }
-        if (successor_local != NA){
-            successor_local = successor_local - a;
+        if (successor_local1 != NA){
+            successor_local1 = successor_local1 - a;
         }
-        return make_pair(predecessor_local,successor_local);
+        this->cnt_wt++;
+
+    if (successor_local != successor_local1 || predecessor_local != predecessor_local1){
+        assert(b ==100);
+        cout<<"a b "<<a <<" "<<b<<endl;
+        for (int i = a; i < b; ++i) {
+            cout<<w[i]<<" ";
+        }
+        cout<<endl;
+        b = b-1;
+
+        cout<<predecessor_local <<" "<<successor_local<< " "<<predecessor_local1<<" "<<successor_local1<<endl;
+        cout<<predecessorNV(a, b)<<" "<<successorNV(a,b)<<" "<<predecessorWT(wt.root(), a-1, b-1)<<" "<<successorWT(wt.root(), a-1, b-1)<<endl;
+
 
     }
+
+
+        return make_pair(predecessor_local,successor_local);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -371,11 +439,11 @@ uint64_t OPST::LastCodeInt(int a, int b) {
 
 void OPST::generateCount(stNode* node, std::ofstream& dotFile, bool suf) {
     if (!node) return;
-    dotFile << "\"" << node << "\" [label=\"" << "Leaf Count: " << node->leafCount << ", Left Max: " << (node->leftMax ? "Yes": "No") << ", Candidate: " << (node->isCandidate ? "Yes" : "No") << "\"];\n";
+    dotFile << "\"" << node << "\" [label=\"" << "Leaf Count: " << node->leafCount << ", Left leftDiverse: " << (node->leftDiverse ? "Yes": "No") << ", Candidate: " << (node->isCandidate ? "Yes" : "No") << "\"];\n";
     std::vector<stNode*> children = node->allChild();
     if (children.empty()) {
 
-//        dotFile << "\"" << node << "\" [shape=ellipse, style=filled, fillcolor=green, label=\" Start: " << node->getStart() << ":  "<<node->leafCount<<";"<<node->leftMax<<";"<<node->isCandidate<< "\"];\n";
+        dotFile << "\"" << node << "\" [shape=ellipse, style=filled, fillcolor=green, label=\" Start: " << node->getStart() << " Leaf Count: " << node->leafCount << ", Left leftDiverse: " << (node->leftDiverse ? "Yes": "No") << ", Candidate: " << (node->isCandidate ? "Yes" : "No") << "\"];\n";
 
     }
     if (!children.empty()){
@@ -566,6 +634,8 @@ OPST::OPST(int_vector<> & w, int &rangeThreshold, double &time_wavelet)
     this->root = new stNode(terminate_label);
     this->root->setSLink( this->root );
 
+
+
     stNode * u = this->root;
     int d = 0;
 
@@ -585,7 +655,7 @@ OPST::OPST(int_vector<> & w, int &rangeThreshold, double &time_wavelet)
             }
         }
 
-        if ( d < u->getDepth() )
+        if ( d < u->getDepth())
         {
             u= createNode (u, d );
         }
@@ -600,6 +670,7 @@ OPST::OPST(int_vector<> & w, int &rangeThreshold, double &time_wavelet)
 //        d = u->getDepth(); // same as d = max( d-1, 0 );
         d = max( d-1, 0 );
     }
+    //the only child of root
 
 
 #ifdef VISUALIZATION
@@ -619,13 +690,15 @@ void OPST::ComputeSuffixLink( stNode * u )
 
     //count the num of implicit node between two branching nodes
     while (!u_copy->getParent()->getSLink()){
+        u_copy->getParent()->encounter_cnt++;
+//        cout<<u_copy->getParent()<<endl;
         u_copy = u_copy->getParent();
         explicit_k ++;
+
         // count the explicit nodes we traverse
     }
 
     stNode * v = u_copy->getParent()->getSLink();
-
 
     while ( v->getDepth() < d-1 )
     {
@@ -634,7 +707,9 @@ void OPST::ComputeSuffixLink( stNode * u )
         int2psInsert(u->getStart()+1, u->getStart() + v->getDepth() + 1);
 #endif
         // go down
+        v->getChild( LastCodeInt(u->getStart()+1, u->getStart() + v->getDepth() + 1) )->encounter_cnt++;
         v = v->getChild( LastCodeInt(u->getStart()+1, u->getStart() + v->getDepth() + 1) );
+
         explicit_k ++;
         // count the explicit nodes we traverse
     }
@@ -677,13 +752,17 @@ void OPST::createLeaf( int i, stNode * u, int d )
     // (n+2)(n+1)+1 represents $
 
     uint64_t leaf_label = LastCodeInt( i, i+d);
-    stNode *leaf  = new stNode(i, this->n-i +1, leaf_label) ;
+    int depth = this->n-i +1;
+    stNode *leaf  = new stNode(i, depth, leaf_label) ;
     u->addChild( leaf, leaf_label);
+    pos2leaf.insert({i, leaf});
+
 
 #ifdef VISUALIZATION
     int2psInsert( leaf->getStart(), leaf->getStart()+d);
     int2psInsert(i, i+d);
 #endif
+
 }
 
 
@@ -693,6 +772,8 @@ void OPST::createLeaf( int i, stNode * u, int d )
 void OPST::MaxTauDFS(int tau) {
     std::stack<stNode *> stack;
     stack.push(root);
+
+    int tauminus1= tau - 1; //for saving time
 
     while (!stack.empty()) {
         stNode *top = stack.top();
@@ -716,9 +797,9 @@ void OPST::MaxTauDFS(int tau) {
                     bool childrenGetau = false; // if one of top's children is candidate, top can not be candidate
                     for (auto &it: top->child) {
                         top->leafCount += it.second->leafCount;
-                        childrenGetau = childrenGetau || (it.second->leafCount > tau - 1);
+                        childrenGetau = childrenGetau || (it.second->leafCount > tauminus1);
                     }
-                    if (top->leafCount > tau - 1 && !childrenGetau) { // it satisfies condition 1 and 2 at the same time
+                    if (top->leafCount > tauminus1 && !childrenGetau) { // it satisfies condition 1 and 2 at the same time
                         top->isCandidate = true;
                     }
 
@@ -743,8 +824,9 @@ void OPST::MaxTauDFS(int tau) {
                     }
                 }
 
-
             }
+            top->visited = false; // After second visiting, reset visited status to default for future use
+
         }
     }
 }
@@ -754,32 +836,426 @@ void OPST::MaxTauDFS(int tau) {
 
 
 
-void OPST::FindNodes() {
+void OPST::MaxFindNodes(std::vector<stNode*> &MaxTauNodes){
     std::stack<stNode*> stack;
     stack.push(root);
-
     while (!stack.empty()) {
         stNode* top = stack.top();
 
-
-        if (!top->visitedTwice) {
-            top->visitedTwice = true; // Mark as visited
+        if (!top->visited) {
+            top->visited = true; // Mark as visited
             // Push the current node onto the stack again so that it can be accessed again after all child nodes have been processed
-
             for (auto &it: top->child) {
-                    stack.push(it.second);
+                stack.push(it.second);
             }
         } else {
             //When all child nodes have been processed, check whether the current node meets the conditions
-            stack.pop();
+
             if (top->isCandidate && top->leftMax) {
                 MaxTauNodes.push_back(top); // Add to result vector
+            }
+            top->visited = false; // After second visiting, reset visited status to default for future use
+            top->isCandidate = false; //reset
+            top->leftMax = true; //reset
+            top->leafCount =0; //reset
+            stack.pop();
+
+        }
+
+    }
+}
+
+
+
+
+//void OPST::FindNodes(){
+//    int cnt = 0;
+//    std::stack<stNode*> stack;
+//    stack.push(root);
+//    while (!stack.empty()) {
+//        stNode* top = stack.top();
+//
+//        if (!top->visited) {
+//            top->visited = true; // Mark as visited
+//            // Push the current node onto the stack again so that it can be accessed again after all child nodes have been processed
+//            for (auto &it: top->child) {
+//                stack.push(it.second);
+//            }
+//        } else {
+//            //When all child nodes have been processed, check whether the current node meets the conditions
+//            if (top->encounter_cnt>0){
+////                cout<<top->encounter_cnt<<endl;
+//
+//            }
+//            if (cnt< top->encounter_cnt) {
+//                cnt = top->encounter_cnt;
+//                cout<<"Find bigger: "<<cnt<<endl;
+//            }
+//
+//            stack.pop();
+//
+//        }
+//
+//    }
+//}
+
+
+/*
+void OPST::ClosedTauDFS(int tau) {
+    for (auto i: w){
+        cout<<i<<",";
+    }
+    cout<<endl;
+    std::reverse(w.begin(), w.end());
+    for (auto i: w){
+        cout<<i<<",";
+    }
+    cout<<endl;
+
+
+
+    construct_im(wt,w);
+    std::stack<stNode *> stack;
+    stack.push(root);
+
+    int tauminus1 = tau - 1; //for saving time
+    while (!stack.empty()) {
+        stNode *top = stack.top();
+
+        if (!top->visited) {
+            // First visit to a node: add all its child nodes to the stack
+            top->visited = true;
+            for (auto &it: top->child) {
+                stack.push(it.second);
+            }
+        } else {
+            // Second visit to the node: The leafCount of all child nodes has been calculated. Now calculate the leafCount of the current node.
+            stack.pop();
+
+            if (top->child.empty()) {
+                // if it is leaf
+                top->leafCount = 1;
+
+            } else {
+                //Otherwise, accumulate leafCount of all child nodes
+                if (top->child.size() > 1) {
+
+                    for (auto &it: top->child) {
+                        top->leafCount += it.second->leafCount;
+
+                    }
+
+                    if (top->leafCount > tauminus1 ) { // it satisfies tau frequent and right-closed
+                        top->isCandidate = true;
+                    }
+
+
+                } else { // the size of children =1 indicating it is implicit node, let its leafCount = leafCount of first child
+
+
+                    top->leafCount = top->child.begin()->second->leafCount;
+
+                }
+
+                // if leftDiverse = true, no need to check children again
+                if (!top->leftDiverse){
+                    // check whether there is any child is leftDiverse
+                    bool existChildLeftDiverse= false;
+                    for (auto &it: top->child) {
+                        if (it.second->leftDiverse){
+                            top->leftDiverse = true;
+                            existChildLeftDiverse = true;
+                            break;
+                        }
+                    }
+
+
+                    //if there is no child is leftDiverse, calculate all children one by one
+                    if(!existChildLeftDiverse){
+
+                        //take first child
+                        cout<<"a1 "<<this->n - top->child.begin()->second->getStart() - top->getDepth()<<endl;
+                        cout<<"b1 "<<this->n - top->child.begin()->second->getStart()<<endl;
+
+                        cout<<"a1 "<<top->child.begin()->second->getStart() + top->getDepth() -1<<endl;
+                        cout<<"b1 "<<top->child.begin()->second->getStart() -1<<endl;
+
+
+                        auto firstCode = LastCode(this->n - top->child.begin()->second->getStart() - top->getDepth(),this->n - top->child.begin()->second->getStart());
+                        // start from the second child
+                        cout<<"Pre "<< firstCode.first <<" Su "<<firstCode.second<<endl;
+
+                        for (auto it = std::next(top->child.begin()); it != top->child.end(); it++ ) {
+                            cout<<"a2 "<<this->n - it->second->getStart() - top->getDepth()<<endl;
+                            cout<<"b2 "<<this->n - it->second->getStart()<<endl;
+
+                            cout<<"a2 "<<it->second->getStart() + top->getDepth() -1<<endl;
+                            cout<<"b2 "<<it->second->getStart() -1 <<endl;
+                            auto currentCode = LastCode(this->n - it->second->getStart() - top->getDepth(), this->n - it->second->getStart());
+                            cout<<"Pre "<< currentCode.first <<" Su "<<currentCode.second<<endl;
+                            if (currentCode != firstCode) { // different
+                                top->leftDiverse = true;
+
+
+                                // Propagate the leftDiverse upward
+                                if ( top->getParent() != NULL) {
+                                    stNode *ancestor = top->getParent() ;
+                                    while ((ancestor != nullptr) && !(ancestor->leftDiverse)) {
+                                        ancestor->leftDiverse = true;
+                                        ancestor = ancestor->getParent();
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+
+                }
+
+                top->visited = false; // After second visiting, reset visited status to default for future use
+
+
             }
         }
     }
 }
 
+*/
 
+/*
+void OPST::ClosedFindNodes(std::vector<stNode*> &ClosedTauNodes){
+    std::stack<stNode*> stack;
+    stack.push(root);
+    while (!stack.empty()) {
+        stNode* top = stack.top();
+
+        if (!top->visited) {
+            top->visited = true; // Mark as visited
+            // Push the current node onto the stack again so that it can be accessed again after all child nodes have been processed
+            for (auto &it: top->child) {
+                stack.push(it.second);
+            }
+        } else {
+            //When all child nodes have been processed, check whether the current node meets the conditions
+
+            if (top->isCandidate && top->leftDiverse) {
+                ClosedTauNodes.push_back(top); // Add to result vector
+            }
+            top->visited = false; // After second visiting, reset visited status to default for future use
+            top->isCandidate = false; //reset
+            top->leftDiverse = false; //reset
+            top->leafCount =0; //reset
+            stack.pop();
+
+        }
+
+    }
+}
+
+
+*/
+
+
+
+
+//TreeNode* findLCA(stNode* root) {
+//    if (!root || root->allChild().empty()) return root;
+//
+//    // u 是第一个子节点的LCA，暂时我们假设它就是root的某个子节点
+//    stNode* u = root->allChild()[0];
+//
+//    for (int i = 1; i < root->children.size(); ++i) {
+//        TreeNode* v = root->children[i];
+//
+//        while (u != v) {
+//            if (depth(u) < depth(v)) {
+//                v = v->parent; // 向上移动v
+//            } else {
+//                u = u->parent; // 向上移动u
+//            }
+//        }
+//    }
+//
+//    // 循环结束后，u 就是所有子节点的LCA
+//    return u;
+//}
+
+//
+//void OPST::ClosedTauDFS(int tau){
+//
+//
+//
+//
+//
+//
+//
+//}
+//
+//
+//
+//void OPST::ClosedFindNodes(std::vector<stNode*> &ClosedTauNodes){
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//}
+//
+
+
+
+
+
+stNode* OPST::FindLCA(stNode* node){
+
+    stNode* u = node->child.begin()->second->LCA;
+    // start from the second child
+    for (auto it = std::next(node->child.begin()); it != node->child.end(); it++ ) {
+        stNode* v = it->second->LCA;
+        if(u->getParent()==root && root->child.size() ==1){
+            break;
+        }
+        while(u != v){
+            if(u->getDepth() < v->getDepth()){
+                v = v->getParent();
+            } else{
+                u = u->getParent();
+            }
+        }
+
+    }
+    return u;
+
+}
+
+
+
+
+
+
+void OPST::ClosedTauDFS(int tau) {
+
+    std::stack<stNode *> stack;
+    stack.push(root);
+
+    // set the LCA stored in the leaves
+    for (auto &i: pos2leaf){
+        if (i.first!=0){
+            i.second->LCA = pos2leaf[i.first -1];
+        } else{
+            i.second->LCA = root->allChild()[0];
+        }
+    }
+
+
+    int tauminus1 = tau - 1; //for saving time
+    while (!stack.empty()) {
+        stNode *top = stack.top();
+
+        if (!top->visited) {
+            // First visit to a node: add all its child nodes to the stack
+            top->visited = true;
+            for (auto &it: top->child) {
+                stack.push(it.second);
+            }
+
+
+        } else {
+            // Second visit to the node: The leafCount of all child nodes has been calculated. Now calculate the leafCount of the current node.
+            stack.pop();
+
+            if (top->child.empty()) {
+                // if it is leaf
+                top->leafCount = 1;
+                //if the leaf does not start from position 0
+//                if (top->getDepth()){
+//                    top->LCA = this->pos2leaf[top->getDepth()-1];
+//                    top->LCA_depth = top->getDepth()+1;
+//                }
+
+//                cout<<"1"<<endl;
+
+
+
+
+
+
+            } else {
+                //Otherwise, accumulate leafCount of all child nodes
+                if (top->child.size() > 1) {
+//                    cout<<"2"<<endl;
+
+                    for (auto &it: top->child) {
+                        top->leafCount += it.second->leafCount;
+                    }
+
+                    if (top->leafCount > tauminus1 ) { // it satisfies tau frequent and right-closed
+                        top->isCandidate = true;
+                    }
+
+//                    top->LCA_depth = top->child.begin()->second->LCA_depth;
+                    top->LCA = FindLCA(top);
+
+
+                } else {
+//                    cout<<"3"<<endl;
+
+                    // the size of children =1 indicating it is implicit node, let its leafCount = leafCount of first child; LCA depth is LCA depth of first child
+
+                    top->leafCount = top->child.begin()->second->leafCount;
+                    top->LCA = top->child.begin()->second->LCA;
+
+//                    top->LCA_depth = top->child.begin()->second->LCA_depth;
+
+                }
+
+
+                if(top->LCA->getDepth() < top->getDepth() +1){
+                    top->leftDiverse = true;
+                }
+
+            }
+            top->visited = false; // After second visiting, reset visited status to default for future use
+        }
+
+    }
+}
+
+
+
+
+void OPST::ClosedFindNodes(std::vector<stNode*> &ClosedTauNodes){
+    std::stack<stNode*> stack;
+    stack.push(root);
+    while (!stack.empty()) {
+        stNode* top = stack.top();
+
+        if (!top->visited) {
+            top->visited = true; // Mark as visited
+            // Push the current node onto the stack again so that it can be accessed again after all child nodes have been processed
+            for (auto &it: top->child) {
+                stack.push(it.second);
+            }
+        } else {
+            //When all child nodes have been processed, check whether the current node meets the conditions
+
+            if (top->isCandidate && top->leftDiverse) {
+                ClosedTauNodes.push_back(top); // Add to result vector
+            }
+            top->visited = false; // After second visiting, reset visited status to default for future use
+            top->isCandidate = false; //reset
+            top->leftDiverse = false; //reset
+            top->leafCount =0; //reset
+            stack.pop();
+        }
+
+    }
+}
 
 
 

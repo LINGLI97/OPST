@@ -13,7 +13,8 @@
 #include <functional>
 
 #include <sdsl/wavelet_trees.hpp>
-
+#include <stdlib.h>
+//#include <stdio.h>
 #include "karp_rabin_hashing.hpp"
 #include "utils.hpp"
 
@@ -29,12 +30,15 @@ using namespace sdsl;
 std::string generatePatternString(const std::vector<std::pair<int, int>>& sortedArray, int x);
 
 
-int cubicMethod(std::vector<int> &w, int &tau);
-
-int quadraticMethod(std::vector<int> &w, int &tau);
+int cubicMethodMax(std::vector<int> &w, int &tau);
 
 
+int quadraticMethodMax(std::vector<int> &w, int &tau);
 
+
+int cubicMethodClosed(std::vector<int> &w, int &tau);
+
+int quadraticMethodClosed(std::vector<int> &w, int &tau);
 
 
 
