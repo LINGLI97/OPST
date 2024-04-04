@@ -22,13 +22,13 @@ You can easily specify parameters, for example:
 ```
 
 The `-f` /`--filepath` option determines the file path;   
-The `--OPST` option determines to enable maximal and closed patterns mining of OPST; the defalut value is true;  
-The `--MaximalQuadratic` option determines to enable maximal patterns mining of the quadratic baseline; the defalut value is false;  
-The `--ClosedQuadratic` option determines to enable closed patterns mining of the quadratic baseline; the defalut value is false;  
-The `--MaximalCubic` option determines to enable maximal patterns mining of the cubic baseline; the defalut value is false;  
-The `--ClosedCubic` option determines to enable closed patterns mining of the cubic baseline; the defalut value is false;  
+The `--OPST` option determines whether to enable maximal and closed patterns mining of OPST; the defalut value is true;  
+The `--MaximalQuadratic` option determines whether to enable maximal patterns mining of the quadratic baseline; the defalut value is false;  
+The `--ClosedQuadratic` option determines whether to enable closed patterns mining of the quadratic baseline; the defalut value is false;  
+The `--MaximalCubic` option determines whether to enable maximal patterns mining of the cubic baseline; the defalut value is false;  
+The `--ClosedCubic` option determines whether to enable closed patterns mining of the cubic baseline; the defalut value is false;  
 
-The `-t`/`--tau` option determines  the value of minimal support, tau > 1. The default value is 512;  
+The `-t`/`--tau` option determines the value of minimal support, tau > 1. The default value is 512;  
 The `-p`/`--printPattern` option determines whether to print the all found maximal patterns. The default value is false.
 
 
