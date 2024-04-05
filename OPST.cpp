@@ -96,10 +96,6 @@ int OPST::Max(const sdsl::wt_int<>::node_type& u, int a, int b) {
 
 int OPST::predecessorWT(const sdsl::wt_int<>::node_type& u, int a, int b) {
 
-//    if (b> this->n-1){
-//        b = this->n-1;
-//        cout<<"here"<<endl;
-//    }
 
     if (a == b) return NA; // predecessor does not exist
 
@@ -324,81 +320,39 @@ int OPST::successorNV(int a, int b) {
 
 pair<int, int> OPST:: LastCode(int a , int b){
 
-//#ifdef CHECK
 
 
-//#endif
+    if ( b -a < rangeThreshold) {
 
-//    cout<< "Inside: "<<a <<" "<< b<<endl;
-//    if ( b -a < rangeThreshold){
-
-        if (b > this->n -1){
-            b = this->n -1;
+        if (b > this->n - 1) {
+            b = this->n - 1;
         }
         int predecessor_local = predecessorNV(a, b);
-        int successor_local =  successorNV(a,b);
-        if (predecessor_local != NA){
+        int successor_local = successorNV(a, b);
+        if (predecessor_local != NA) {
             predecessor_local = predecessor_local - a;
         }
 
+        if (successor_local != NA) {
+            successor_local = successor_local - a;
+        }
+        return make_pair(predecessor_local, successor_local);
+
+    } else{
+
+        int predecessor_local = predecessorWT(wt.root(), a-1, b-1);
+        int successor_local = successorWT(wt.root(), a-1, b-1);
+        if (predecessor_local != NA){
+            predecessor_local = predecessor_local - a;
+        }
         if (successor_local != NA){
             successor_local = successor_local - a;
         }
-
-
-
-
-
-
-
-//        return make_pair(predecessor_local,successor_local);
-
-
-
-//        cout<<"2"<<endl;
-
-
-        int predecessor_local1 = predecessorWT(wt.root(), a-1, b-1);
-        int successor_local1 = successorWT(wt.root(), a-1, b-1);
-        if (predecessor_local1 != NA){
-            predecessor_local1 = predecessor_local1 - a;
-        }
-        if (successor_local1 != NA){
-            successor_local1 = successor_local1 - a;
-        }
         this->cnt_wt++;
-
-    if (successor_local != successor_local1 || predecessor_local != predecessor_local1){
-        assert(b ==100);
-        cout<<"a b "<<a <<" "<<b<<endl;
-        for (int i = a; i < b; ++i) {
-            cout<<w[i]<<" ";
-        }
-        cout<<endl;
-        b = b-1;
-
-        cout<<predecessor_local <<" "<<successor_local<< " "<<predecessor_local1<<" "<<successor_local1<<endl;
-        cout<<predecessorNV(a, b)<<" "<<successorNV(a,b)<<" "<<predecessorWT(wt.root(), a-1, b-1)<<" "<<successorWT(wt.root(), a-1, b-1)<<endl;
-
-
-    }
-
 
         return make_pair(predecessor_local,successor_local);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
 
 }
 
