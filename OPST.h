@@ -43,21 +43,19 @@ class OPST
 {
 private:
     stNode * root;
-//    stNode * rootSoleChild;
 
-    int_vector<> w;
-    unordered_map<uint64_t, pair<int, int>> int2ps;
+//    int_vector<> w;
+    vector<int> w;
 
     int rangeThreshold;
 
     DerivedWTInt wt;
-
-    DerivedWTInt wtReversed;
-
+    double waveletTime;
+    bool waveletFlag ;
 
 
 public:
-    explicit OPST( int_vector<> & w, int &rangeThreshold, double &time_wavelet);
+    explicit OPST(vector<int> & w, int &rangeThreshold);
 
 
 //predecessor
@@ -65,13 +63,10 @@ public:
     int predecessorNV(int a, int b);
     int predecessorWT(const sdsl::wt_int<>::node_type& u, int a, int b);
 
-//successor
-    int Min(const sdsl::wt_int<>::node_type& u, int a, int b);
-    int successorNV(int a, int b);
-    int successorWT(const sdsl::wt_int<>::node_type& u, int a, int b);
 
 // LastCodeInt
-    uint64_t LastCodeInt(int a, int b);
+    int LastCodeInt(int a, int b);
+
     pair<int, int>  LastCode( int a, int b);
 
 
@@ -81,20 +76,9 @@ public:
     void ComputeSuffixLink( stNode * u );
 
 
-    // Visualization
-    void int2psInsert(int a, int b);
-    void exportSuffixTreeToDot(const std::string& filename,bool suf);
-    void generateDot(stNode* node, std::ofstream& dotFile, bool suf);
-    void generateCount(stNode* node, std::ofstream& dotFile, bool suf);
-
-
-
-
     // Maximal
     void MaxTauDFS(int tau);
     void MaxFindNodes(std::vector<stNode*> &MaxTauNodes);
-//    void FindNodes();
-
 
 
 //    Closed
@@ -109,11 +93,9 @@ public:
 
     unordered_map<int,stNode*> pos2leaf;
 
-    int explicit_k = 0;
+//    int explicit_k = 0;
     int n; // the length of w
-    uint64_t terminate_label;
-    int sigma;
-    int cnt_wt = 0; // count how many times wavelet tree are called
+    int terminate_label;
 
     void deleteTreeIteratively();
     ~OPST();

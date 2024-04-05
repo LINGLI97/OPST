@@ -27,7 +27,7 @@ stNode::stNode()
 
 
 
-stNode::stNode(uint64_t terminate_label)
+stNode::stNode(int terminate_label)
 {
     this->start = 0;
     this->depth = 0;
@@ -45,7 +45,7 @@ stNode::stNode(uint64_t terminate_label)
 
 }
 
-stNode::stNode( int i, int d, uint64_t l)
+stNode::stNode( int i, int d, int l)
 {
     this->start = i;
     this->depth = d;
@@ -63,15 +63,6 @@ stNode::stNode( int i, int d, uint64_t l)
 
 }
 
-int stNode::getStart()
-{
-    return this->start;
-}
-
-int stNode::getDepth()
-{
-    return this->depth;
-}
 
 void stNode::setDepth( int d){
 
@@ -79,19 +70,13 @@ void stNode::setDepth( int d){
 }
 
 
-int stNode::getLabel()
-{
-    return this->label;
-}
-stNode * stNode::getChild( uint64_t l )
-{
-#ifdef UNORDERED_DENSE
-    ankerl::unordered_dense::map<uint64_t, stNode*>::iterator it;
 
-#else
-    unordered_map<uint64_t, stNode*>::iterator it;
+stNode * stNode::getChild( int l )
+{
 
-#endif
+    unordered_map<int, stNode*>::iterator it;
+
+
 
     it = this->child.find(l);
     if ( it == this->child.end() )
@@ -100,27 +85,18 @@ stNode * stNode::getChild( uint64_t l )
         return it->second;
 }
 
-stNode * stNode::getParent()
-{
-    return this->parent;
-}
-
-stNode * stNode::getSLink()
-{
-    return this->slink;
-}
 
 void stNode::setSLink( stNode * slinkNode )
 {
     this->slink = slinkNode;
 }
 
-void stNode::addChild( stNode * childNode, uint64_t l)
+void stNode::addChild( stNode * childNode, int l)
 {
     auto it = this->child.find( l );
     if ( it == this->child.end() )
     {
-        pair <uint64_t , stNode*> insertChild( l, childNode );
+        pair <int, stNode*> insertChild( l, childNode );
         this->child.insert( insertChild);
     }
     else

@@ -21,28 +21,6 @@ using namespace sdsl;
 //#include "cmdline.h"
 
 
-void readfile(const string &filename, int_vector<>& input_seq_vec){
-    std::ifstream f(filename);
-    if (!f) {
-        std::cerr << "Unable to open file: " << filename << std::endl;
-        return;
-    }
-
-    std::vector<int> temp_vec;
-    int c;
-    while (f >> c) {
-        temp_vec.push_back(c);
-    }
-    f.close();
-
-    // Then set input_seq_vec size otherwise input_seq_vec will have memory problem
-    input_seq_vec.resize(temp_vec.size());
-    for(size_t i = 0; i < temp_vec.size(); ++i) {
-        input_seq_vec[i] = (uint64_t)temp_vec[i];
-    }
-}
-
-
 
 
 void readfile(const string &filename, std::vector<int> &normalVec){
@@ -107,26 +85,29 @@ int main(int argc, char *argv[])
 
     cout<<"Tau is set as "<< tau<<"."<<endl;
 
+    // read file to input_vec
+    vector<int> input_vec;
+    readfile(filename, input_vec);
+
+
 
     if (parser.get<bool>("OPST")){
 
         cout<<"Enabling OPST method"<<endl;
         int rangeThreshold = parser.get<int>("rangeThreshold");
 
-        double time_wavelet =0.0;
-
-        int_vector<> input_vec;
-
-        // read vector from file
-        readfile(filename, input_vec);
-
-
+        // OPST construction
         auto Construction_start = std::chrono::high_resolution_clock::now();
 
-        OPST OP(input_vec, rangeThreshold, time_wavelet);
+        OPST OP(input_vec, rangeThreshold);
 
         auto Construction_end = std::chrono::high_resolution_clock::now();
         double time_Construction = std::chrono::duration_cast < std::chrono::milliseconds > (Construction_end - Construction_start).count()*0.001;
+
+
+
+        //Maximal patterns mining
+
         std::vector<stNode*> MaxTauNodes;
 
         auto Maximal_start = std::chrono::high_resolution_clock::now();
@@ -140,10 +121,12 @@ int main(int argc, char *argv[])
         double time_Maximal = std::chrono::duration_cast < std::chrono::milliseconds > (Maximal_end - Maximal_start).count()*0.001;
 
 
+
+
+        //Closed patterns mining
         std::vector<stNode*> ClosedTauNodes;
 
         auto Closed_start = std::chrono::high_resolution_clock::now();
-
 
         OP.ClosedTauDFS(tau);
         OP.ClosedFindNodes(ClosedTauNodes);
@@ -157,15 +140,14 @@ int main(int argc, char *argv[])
 
 
 
-        cout<<"Sigma of input = "<<OP.sigma<<endl;
         cout<<"The input size: "<<OP.n<<endl;
 
-        cout<<"Terminate_label $ = " << OP.terminate_label<<endl;
+        cout<<"Terminate_label (2 * n + 1) $ = " << OP.terminate_label<<endl;
 //        cout<< "If the range of LastCode input (a, b) , namely b - a < "<<rangeThreshold <<", it utilizes the naive way to compute (p(w), s(w))."<<endl;
 
-//        cout<< "Runtime for wavelet tree construction  = "<<time_wavelet<<" s."<<endl;
+//
 //        cout<<"Runtime for suffix tree construction  = "<<time_Construction- time_wavelet<<" s."<<endl;
-        cout<<"Runtime only for wavelet tree and suffix tree construction  = "<<time_Construction<<" s."<<endl;
+        cout<<"Runtime only for OPST construction  = "<<time_Construction<<" s."<<endl;
 
         cout<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
 
@@ -188,12 +170,12 @@ int main(int argc, char *argv[])
 //        cout<<"The number of times of using wavelet to compute LastCode: "<<OP.cnt_wt<<endl;
         if (parser.get<bool>("printPattern")){
             for (const auto& node : MaxTauNodes) {
-                std::cout << "Maximal Patterns found at interval: [" << node->getStart() << ", " << node->getStart() + node->getDepth() -1 << "]" << std::endl;
+                std::cout << "Maximal Patterns found at interval: [" << node->start << ", " << node->start + node->depth -1 << "]" << std::endl;
             }
             cout<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
 
             for (const auto& node : ClosedTauNodes) {
-                std::cout << "Closed Patterns found at interval: [" << node->getStart() << ", " << node->getStart() + node->getDepth() -1 << "]" << std::endl;
+                std::cout << "Closed Patterns found at interval: [" << node->start << ", " << node->start + node->depth -1 << "]" << std::endl;
             }
 
         }
@@ -209,11 +191,15 @@ int main(int argc, char *argv[])
 
 
 
-    if(parser.get<bool>("MaximalQuadratic")){
-        cout<<"Enabling O(n^2*log(n)) baseline: Maximal patterns mining: "<<endl;
 
-        vector<int> input_vec;
-        readfile(filename, input_vec);
+
+
+    // Baselines
+
+    if(parser.get<bool>("MaximalQuadratic")){
+        cout<<"Enabling O(n^2*log(n)) baseline - Maximal patterns mining: "<<endl;
+
+
 
 //        std::vector<int> input_vec = {10,6,4,2,8,5,9,5,6,10,3,6,5,8,2,1,10,10,3,3,4,8,6,3,5,4,7,4,9,3,1,7,6,5,2,6,9,2,5,1,4,7,6,6,1,10,7,8,8,9,9,10,3,7,7,3,7,1,7,7,5,5,9,3,1,7,1,7,3,3,4,5,3,6,1,2,9,2,9,6,9,8,6,6,9,3,1,1,8,8,9,2,6,8,2,1,8,4,2,4,8,4,9,5,5,10,10,8,4,1,8,10,4,4,2,1,9,8,3,7,4,2,2,1,4,5,4,10,6,3,3,2,8,1,1,5,6,3,8,1,9,1,7,5,10,9,4,8,1,5,10,5,6,6,5,6,10,8,4,8,8,9,5,7,1,4,6,3,8,2,2,2,1,9,5,6,10,8,4,8,1,4,2,8,8,6,5,5,7,1,1,6,1,8,9,6,3,8,6,3};
 
@@ -233,12 +219,12 @@ int main(int argc, char *argv[])
 
 
     if(parser.get<bool>("ClosedQuadratic")){
-        cout<<"Enabling O(n^2*log(n)) baseline: Closed patterns mining: "<<endl;
+        cout<<"Enabling O(n^2*log(n)) baseline - Closed patterns mining: "<<endl;
 
 //        std::vector<int> input_vec = {10,6,4,2,8,5,9,5,6,10,3,6,5,8,2,1,10,10,3,3,4,8,6,3,5,4,7,4,9,3,1,7,6,5,2,6,9,2,5,1,4,7,6,6,1,10,7,8,8,9,9,10,3,7,7,3,7,1,7,7,5,5,9,3,1,7,1,7,3,3,4,5,3,6,1,2,9,2,9,6,9,8,6,6,9,3,1,1,8,8,9,2,6,8,2,1,8,4,2,4,8,4,9,5,5,10,10,8,4,1,8,10,4,4,2,1,9,8,3,7,4,2,2,1,4,5,4,10,6,3,3,2,8,1,1,5,6,3,8,1,9,1,7,5,10,9,4,8,1,5,10,5,6,6,5,6,10,8,4,8,8,9,5,7,1,4,6,3,8,2,2,2,1,9,5,6,10,8,4,8,1,4,2,8,8,6,5,5,7,1,1,6,1,8,9,6,3,8,6,3};
-        vector<int> input_vec = {};
-        readfile(filename, input_vec);
-
+//        vector<int> input_vec = {};
+//        readfile(filename, input_vec);
+//
 
         auto quadratic_start = std::chrono::high_resolution_clock::now();
 
@@ -259,8 +245,8 @@ int main(int argc, char *argv[])
 
     if (parser.get<bool>("MaximalCubic")){
         cout<<"Enabling O(n^3*log(n)) baseline - Maximal patterns mining: "<<endl;
-        vector<int> input_vec;
-        readfile(filename, input_vec);
+//        vector<int> input_vec;
+//        readfile(filename, input_vec);
 
 //        std::vector<int> input_vec = {10,6,4,2,8,5,9,5,6,10,3,6,5,8,2,1,10,10,3,3,4,8,6,3,5,4,7,4,9,3,1,7,6,5,2,6,9,2,5,1,4,7,6,6,1,10,7,8,8,9,9,10,3,7,7,3,7,1,7,7,5,5,9,3,1,7,1,7,3,3,4,5,3,6,1,2,9,2,9,6,9,8,6,6,9,3,1,1,8,8,9,2,6,8,2,1,8,4,2,4,8,4,9,5,5,10,10,8,4,1,8,10,4,4,2,1,9,8,3,7,4,2,2,1,4,5,4,10,6,3,3,2,8,1,1,5,6,3,8,1,9,1,7,5,10,9,4,8,1,5,10,5,6,6,5,6,10,8,4,8,8,9,5,7,1,4,6,3,8,2,2,2,1,9,5,6,10,8,4,8,1,4,2,8,8,6,5,5,7,1,1,6,1,8,9,6,3,8,6,3};
 
@@ -283,8 +269,8 @@ int main(int argc, char *argv[])
 
     if (parser.get<bool>("ClosedCubic")){
         cout<<"Enabling O(n^3*log(n)) baseline - Closed patterns mining: "<<endl;
-        vector<int> input_vec;
-        readfile(filename, input_vec);
+//        vector<int> input_vec;
+//        readfile(filename, input_vec);
 
 
 //        std::vector<int> input_vec = {10,6,4,2,8,5,9,5,6,10,3,6,5,8,2,1,10,10,3,3,4,8,6,3,5,4,7,4,9,3,1,7,6,5,2,6,9,2,5,1,4,7,6,6,1,10,7,8,8,9,9,10,3,7,7,3,7,1,7,7,5,5,9,3,1,7,1,7,3,3,4,5,3,6,1,2,9,2,9,6,9,8,6,6,9,3,1,1,8,8,9,2,6,8,2,1,8,4,2,4,8,4,9,5,5,10,10,8,4,1,8,10,4,4,2,1,9,8,3,7,4,2,2,1,4,5,4,10,6,3,3,2,8,1,1,5,6,3,8,1,9,1,7,5,10,9,4,8,1,5,10,5,6,6,5,6,10,8,4,8,8,9,5,7,1,4,6,3,8,2,2,2,1,9,5,6,10,8,4,8,1,4,2,8,8,6,5,5,7,1,1,6,1,8,9,6,3,8,6,3};

@@ -16,22 +16,21 @@ using namespace std;
 
 class stNode
 {
-private:
+public:
     int start;
     int depth;
-    uint64_t label; // label is the label of edge which links its parent and itself
+    int label; // label is the label of edge which links its parent and itself
 
 
     stNode * parent;
     stNode * slink;
-public:
+
     stNode();
-    explicit stNode(uint64_t terminate_label);
-    stNode( int i, int d, uint64_t l );
-    int getStart();
-    int getDepth();
+    explicit stNode(int terminate_label);
+    stNode( int i, int d, int l );
+
     void setDepth( int d);
-    int getLabel();
+
 
 //DFS
     bool isCandidate;
@@ -40,27 +39,22 @@ public:
     int leafCount;
     bool leftDiverse;
     stNode* LCA;
-//    int LCA_depth;
 
 
 
-#ifdef UNORDERED_DENSE
-    ankerl::unordered_dense::map<uint64_t, stNode*> child;
-
-#else
-    unordered_map<uint64_t, stNode*> child;
-#endif
 
 
-    stNode * getChild( uint64_t l );
-    stNode * getParent();
-    stNode * getSLink();
+    unordered_map<int, stNode*> child;
+
+
+    stNode * getChild( int l );
+
     void setSLink( stNode * slinkNode );
-    void addChild( stNode * childNode,  uint64_t l );
+    void addChild( stNode * childNode,  int l );
 
     void setParent ( stNode * parentNode );
     int numChild();
-    int encounter_cnt;
+
     std::vector<stNode*> allChild();
 
 

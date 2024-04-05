@@ -204,8 +204,11 @@ int cubicMethodMax(std::vector<int> &w, int &tau){
         H[0][i] = 0;
     }
     HT[0][0] = n;
+    bool flag;
 
     for(int k = 1; k < n; ++k) {
+        flag = false;
+
         for (int i = 0; i < n - k; ++i) {
 
 //            std::cout << "the range of w " << "(" << i << "," << k + i << ")" << std::endl;
@@ -233,6 +236,7 @@ int cubicMethodMax(std::vector<int> &w, int &tau){
             H[k % 2][i] = hashValue;
             int x = ++HT[k % 2][H[k % 2][i]];
             if (x >= tau) {
+                flag = true;
 
                 HT[(k-1)%2][H[(k-1)%2][i]] =0;
                 HT[(k-1)%2][H[(k-1)%2][i+1]] =0;
@@ -253,6 +257,10 @@ int cubicMethodMax(std::vector<int> &w, int &tau){
 
 
         HT[(k - 1) % 2].clear();
+        if (!flag){
+//            cout<<"break"<<endl;
+            break;
+        }
 
     }
     return cnt_maximal;
@@ -281,8 +289,9 @@ int quadraticMethodMax(std::vector<int> &w, int &tau){
 
     uint64_t odd_hashValue  = 2 * n;
 
+    bool flag;
     for(int k = 1; k < n; ++k) {
-
+        flag = false;
         //initialization of Set S
         S.clear();
         for (int j = 0; j < k; ++j) {
@@ -312,11 +321,11 @@ int quadraticMethodMax(std::vector<int> &w, int &tau){
 
             int x = ++HT[k % 2][H[k % 2][i]];
             if (x >= tau) {
-
 //                std::cout<<"Killed"<<std::endl;
-
+                flag = true;
                 HT[(k-1)%2][H[(k-1)%2][i]] =0;
                 HT[(k-1)%2][H[(k-1)%2][i+1]] =0;
+
             }
 
             // window sliding
@@ -336,8 +345,12 @@ int quadraticMethodMax(std::vector<int> &w, int &tau){
             }
         }
 
-        HT[(k - 1) % 2].clear();//        std::vector<int> vec = {1,2,4,4,2,5,5,1};
 
+        HT[(k - 1) % 2].clear();//        std::vector<int> vec = {1,2,4,4,2,5,5,1};
+        if (!flag){
+//            cout<<"break"<<endl;
+            break;
+        }
     }
     return cnt_maximal;
 }
@@ -348,7 +361,7 @@ int cubicMethodClosed(std::vector<int> &w, int &tau){
     karp_rabin_hashing::init();
 
 //    std::vector<int> w = {1,2,4,1,2,4,1,2,4};
-    int cnt_maximal = 0;
+    int cnt_closed = 0;
     int n = w.size();
 
     uint64_t H[2][n];
@@ -359,9 +372,12 @@ int cubicMethodClosed(std::vector<int> &w, int &tau){
         H[0][i] = 0;
     }
     HT[0][0] = n;
+    bool flag;
 
     for(int k = 1; k < n; ++k) {
+        flag = false;
         for (int i = 0; i < n - k; ++i) {
+
 
 //            std::cout << "the range of w " << "(" << i << "," << k + i << ")" << std::endl;
             std::vector<std::pair<int, int>> subsequence;
@@ -386,9 +402,11 @@ int cubicMethodClosed(std::vector<int> &w, int &tau){
 //            cout<<"k = "<<k <<"; hashvalue: "<<hashValue<<endl;
             H[k % 2][i] = hashValue;
             HT[k % 2][H[k % 2][i]]++;
+
+
             if (HT[(k-1)%2][H[(k-1)%2][i]] == HT[k%2][H[k%2][i]]) {
 
-//                std::cout<<"Killed"<<std::endl;
+
 
                 HT[(k-1)%2][H[(k-1)%2][i]] =0;
 
@@ -398,11 +416,13 @@ int cubicMethodClosed(std::vector<int> &w, int &tau){
 
             if (HT[(k-1)%2][H[(k-1)%2][i+1]] == HT[k%2][H[k%2][i]]){
 
-//                std::cout<<"Killed"<<std::endl;
 
                 HT[(k-1)%2][H[(k-1)%2][i+1]] =0;
 
             }
+
+
+
         }
 
 
@@ -410,17 +430,9 @@ int cubicMethodClosed(std::vector<int> &w, int &tau){
 
         for (auto it :HT[(k - 1) % 2]) {
             if (it.second >= tau) {
+                flag = true;
 //                cout<<it.first<<" pattern happened "<< it.second<<"times"<<endl;
-
-                cnt_maximal ++;
-                vector<int> vec;
-                for (int p = 0; p< n; p++){
-                    if (H[(k - 1) % 2][p] == it.first ){
-//                        cout<<"witness"<< p <<" ";
-                        vec.push_back(p);
-                    }
-                }
-//                cout<<endl;
+                cnt_closed ++;
 
             }
 
@@ -429,8 +441,14 @@ int cubicMethodClosed(std::vector<int> &w, int &tau){
 
         HT[(k - 1) % 2].clear();
 
+
+        if (!flag){
+//            cout<<"break"<<endl;
+
+            break;
+        }
     }
-    return cnt_maximal;
+    return cnt_closed;
 }
 
 
@@ -438,7 +456,7 @@ int quadraticMethodClosed(std::vector<int> &w, int &tau){
     karp_rabin_hashing::init();
 
 
-    int cnt_maximal = 0;
+    int cnt_closed = 0;
     int n = w.size();
 
     uint64_t H[2][n];
@@ -452,8 +470,10 @@ int quadraticMethodClosed(std::vector<int> &w, int &tau){
     HT[0][0] = n;
     uint64_t odd_hashValue = 2*n;
 
+    bool flag;
 
     for(int k = 1; k < n; ++k) {
+        flag = false;
 
         //initialization of Set S
         S.clear();
@@ -511,19 +531,12 @@ int quadraticMethodClosed(std::vector<int> &w, int &tau){
 
         for (auto it :HT[(k - 1) % 2]) {
             if (it.second >= tau) {
-//                    cout<<"times" <<it.second<<
-                cnt_maximal ++;
-//                    continue;
-//                cout<<it.first<<" pattern happened "<< it.second<<"times"<<endl;
-//                cout<<k<<" ";
+                flag = true;
 
-                vector<int> vec;
-                for (int p = 0; p< n; p++){
-                    if (H[(k - 1) % 2][p] == it.first ){
-//                        cout<<"witness"<< p <<" ";
-                        vec.push_back(p);
-                    }
-                }
+//                    cout<<"times" <<it.second<<
+                cnt_closed ++;
+//                cout<<it.first<<" pattern happened "<< it.second<<"times"<<endl;
+
 
 
             }
@@ -540,8 +553,13 @@ int quadraticMethodClosed(std::vector<int> &w, int &tau){
 
         HT[(k - 1) % 2].clear();
 
+
+        if (!flag){
+//            cout<<"break"<<endl;
+            break;
+        }
     }
-    return cnt_maximal;
+    return cnt_closed;
 }
 
 
