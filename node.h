@@ -37,8 +37,10 @@ public:
     bool isCandidate;
     bool leftMax;
     bool visited;
-    bool visitedTwice;
     int leafCount;
+    bool leftDiverse;
+    stNode* LCA;
+//    int LCA_depth;
 
 
 
@@ -58,6 +60,7 @@ public:
 
     void setParent ( stNode * parentNode );
     int numChild();
+    int encounter_cnt;
     std::vector<stNode*> allChild();
 
 

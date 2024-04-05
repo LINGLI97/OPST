@@ -43,6 +43,8 @@ class OPST
 {
 private:
     stNode * root;
+//    stNode * rootSoleChild;
+
     int_vector<> w;
     unordered_map<uint64_t, pair<int, int>> int2ps;
 
@@ -50,6 +52,7 @@ private:
 
     DerivedWTInt wt;
 
+    DerivedWTInt wtReversed;
 
 
 
@@ -86,15 +89,32 @@ public:
 
 
 
-    // DFS
-    void MaxTauDFS(int tau);
-    void FindNodes();
 
-    std::vector<stNode*> MaxTauNodes;
+    // Maximal
+    void MaxTauDFS(int tau);
+    void MaxFindNodes(std::vector<stNode*> &MaxTauNodes);
+//    void FindNodes();
+
+
+
+//    Closed
+    stNode* FindLCA(stNode* node);
+
+    void ClosedTauDFS(int tau);
+    void ClosedFindNodes(std::vector<stNode*> &ClosedTauNodes);
+
+
+
+//    std::vector<stNode*> MaxTauNodes;
+
+    unordered_map<int,stNode*> pos2leaf;
+
     int explicit_k = 0;
     int n; // the length of w
     uint64_t terminate_label;
     int sigma;
+    int cnt_wt = 0; // count how many times wavelet tree are called
+
     void deleteTreeIteratively();
     ~OPST();
 };
