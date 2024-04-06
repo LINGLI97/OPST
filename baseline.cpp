@@ -195,9 +195,9 @@ int cubicMethodMax(std::vector<int> &w, int &tau){
     int cnt_maximal = 0;
     int n = w.size();
 
-    uint64_t H[2][n-1];
-//    int HT[2][n];
-    std::unordered_map<uint64_t,int> HT[2];
+    std::vector<std::vector<uint64_t>> H(2, std::vector<uint64_t>(n, 0));
+
+    std::vector<std::unordered_map<uint64_t, int>> HT(2);
 
 //
     for(int i = 0; i < n; ++i) {
@@ -277,9 +277,9 @@ int quadraticMethodMax(std::vector<int> &w, int &tau){
     int cnt_maximal = 0;
     int n = w.size();
 
-    uint64_t H[2][n];
+    std::vector<std::vector<uint64_t>> H(2, std::vector<uint64_t>(n, 0));
 
-    std::unordered_map<uint64_t,int> HT[2];
+    std::vector<std::unordered_map<uint64_t, int>> HT(2);
     std::set<std::pair<int, int>> S;
 
     for(int i = 0; i < n; ++i) {
@@ -306,8 +306,6 @@ int quadraticMethodMax(std::vector<int> &w, int &tau){
             if (it != S.begin()) { // make it is not the first element
                 --it; // the iterator points to the element before current
 
-                // the position of the element before current
-                //whether its first coordinate is equal to w[i+k].
 
                 uint64_t appendix = 2*(it->second - i) + (int)(it->first == w[i+k]);
 
@@ -364,9 +362,10 @@ int cubicMethodClosed(std::vector<int> &w, int &tau){
     int cnt_closed = 0;
     int n = w.size();
 
-    uint64_t H[2][n];
-    std::unordered_map<uint64_t,int> HT[2];
 
+    std::vector<std::vector<uint64_t>> H(2, std::vector<uint64_t>(n, 0));
+
+    std::vector<std::unordered_map<uint64_t, int>> HT(2);
 //
     for(int i = 0; i < n; ++i) {
         H[0][i] = 0;
@@ -460,8 +459,8 @@ int quadraticMethodClosed(std::vector<int> &w, int &tau){
     int n = w.size();
 
     uint64_t H[2][n];
-
     std::unordered_map<uint64_t,int> HT[2];
+
     std::set<std::pair<int, int>> S;
 
     for(int i = 0; i < n; ++i) {
