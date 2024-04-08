@@ -240,7 +240,7 @@ pair<int, int> OPST:: LastCode(int a , int b){
 
 int OPST::LastCodeInt(int a, int b) {
     // call LastCode
-    // b = n, returns $ (n+1)(n+2) +1
+    // b = n, returns terminate_label: 2 * n + 1
     if (b != n){
         pair<int, int> ab = this->LastCode(a, b);
         return (ab.first * 2 + ab.second);
@@ -268,10 +268,6 @@ OPST::OPST(vector<int> & w, int &rangeThreshold)
     this->rangeThreshold = rangeThreshold;
 
 
-#ifdef CHECK
-
-    assert((int)wt.size() == this->n);
-#endif
     this->root = new stNode(terminate_label);
     this->root->setSLink( this->root );
 
