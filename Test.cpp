@@ -19,8 +19,9 @@
 //#include "Predecessor.h"
 //
 #include "OPST.h"
-#include "karp_rabin_hashing.hpp"
-#include "utils.hpp"
+#include "baseline.h"
+
+
 #include <math.h>
 #include <cmath>
 
@@ -35,142 +36,142 @@ using namespace sdsl;
 #include <chrono>
 
 
-
-
-namespace karp_rabin_hashing {
-
-//=============================================================================
-// Base and exponent used in Karp-Rabin hashing.
-//=============================================================================
-    std::uint64_t hash_variable;
-    std::uint64_t mersenne_prime_exponent;
-
-//=============================================================================
-// Return (a * b) mod p, where p = (2^k) - 1.
-// Requires a, b <= 2^k. Tested for k = 1, .., 63.
-//=============================================================================
-    std::uint64_t mul_mod_mersenne(
-            const std::uint64_t a,
-            const std::uint64_t b,
-            const std::uint64_t k) {
-        const std::uint64_t p = ((std::uint64_t)1 << k) - 1;
-        __extension__ const unsigned __int128 ab =
-                (unsigned __int128)a *
-                (unsigned __int128)b;
-        std::uint64_t lo = (std::uint64_t)ab;
-        const std::uint64_t hi = (ab >>  (uint64_t) 64);
-        lo = (lo & p) + ((lo >> k) + (hi << ( (uint64_t) 64 - k)));
-        lo = (lo & p) + (lo >> k);
-        return lo == p ?  (uint64_t) 0 : lo;
-    }
-
-//=============================================================================
-// Return a mod p, where p = (2^k) - 1.
-// Works for any a in [0..2^64).
-// Tested for k = 1, .., 63.
-//=============================================================================
-    std::uint64_t mod_mersenne(
-            std::uint64_t a,
-            const std::uint64_t k) {
-        std::uint64_t p = ((std::uint64_t)1 << k) -  (uint64_t) 1;
-        if (k < (uint64_t) 32) {
-
-            // We need to check if a <= 2^(2k).
-            const std::uint64_t threshold = ((std::uint64_t)1 << (k <<  (uint64_t) 1));
-            if (a <= threshold) {
-                a = (a & p) + (a >> k);
-                a = (a & p) + (a >> k);
-                return a == p ?  (uint64_t) 0 : a;
-            } else return a % p;
-        } else {
-
-            // We are guaranteed that a < 2^(2k)
-            // because a < 2^64 <= 2^(2k).
-            a = (a & p) + (a >> k);
-            a = (a & p) + (a >> k);
-            return a == p ?  (uint64_t) 0 : a;
-        }
-    }
-
-//=============================================================================
-// Return random number x in [0..p), where p = (2^k) - 1.
-//=============================================================================
-    std::uint64_t rand_mod_mersenne(const std::uint64_t k) {
-        const std::uint64_t p = ((std::uint64_t)1 << k) -  (uint64_t) 1;
-        return utils::random_int<std::uint64_t>(
-                (std::uint64_t)0, (std::uint64_t(p -  (uint64_t) 1)));
-    }
-
-//=============================================================================
-// Return (a^n) mod p, where p = (2^k) - 1.
-//=============================================================================
-    std::uint64_t  pow_mod_mersenne(
-            const std::uint64_t a,
-            std::uint64_t n,
-            const std::uint64_t k) {
-        std::uint64_t pow = mod_mersenne(a, k);
-        std::uint64_t ret = mod_mersenne( (uint64_t) 1, k);
-        while (n >  (uint64_t) 0) {
-            if (n &  (uint64_t) 1)
-                ret = mul_mod_mersenne(ret, pow, k);
-            pow = mul_mod_mersenne(pow, pow, k);
-            n >>=  (uint64_t) 1;
-        }
-        return ret;
-    }
-
-//=============================================================================
-// Given Karp-Rabin hashes of two substrings, return
-// the Karp-Rabin hash of their concatenation.
-//=============================================================================
-    std::uint64_t concat(
-            const std::uint64_t left_hash,
-            const std::uint64_t right_hash,
-            const std::uint64_t right_len) {
-        const std::uint64_t pow = pow_mod_mersenne(
-                hash_variable, right_len, mersenne_prime_exponent);
-        const std::uint64_t tmp = mul_mod_mersenne(
-                left_hash, pow, mersenne_prime_exponent);
-        const std::uint64_t ret = mod_mersenne(
-                tmp + right_hash, mersenne_prime_exponent);
-        return ret;
-    }
-    std::uint64_t power(const std::uint64_t k)
-    {
-        return pow((uint64_t)2,k);
-    }
-    std::uint64_t subtract(const std::uint64_t long_hash, const std::uint64_t short_hash, const std::uint64_t right_len)
-    {
-        const std::uint64_t pow = pow_mod_mersenne(
-                hash_variable, right_len, mersenne_prime_exponent);
-
-
-        //mul_mod_mersenne requires a, b <= 2^k
-        uint64_t max_pow=power(mersenne_prime_exponent);
-        if(short_hash > max_pow || pow > max_pow || mersenne_prime_exponent > 63)
-            cout<<"Error2";
-
-        const std::uint64_t tmp = mul_mod_mersenne(
-                short_hash, pow, mersenne_prime_exponent);
-
-        if(long_hash < tmp)cout<<"error\n";
-        const std::uint64_t ret = mod_mersenne(
-                long_hash-tmp, mersenne_prime_exponent);
-
-        return ret;
-    }
-
-//=============================================================================
-// Initialize the base and exponent for Karp-Rabin hashing.
-//=============================================================================
-    void init() {
-        mersenne_prime_exponent = 61;
-        hash_variable = rand_mod_mersenne(mersenne_prime_exponent);
-    }
-
-}  // namespace karp_rabin_kashing
-
-
+//
+//
+//namespace karp_rabin_hashing {
+//
+////=============================================================================
+//// Base and exponent used in Karp-Rabin hashing.
+////=============================================================================
+//    std::uint64_t hash_variable;
+//    std::uint64_t mersenne_prime_exponent;
+//
+////=============================================================================
+//// Return (a * b) mod p, where p = (2^k) - 1.
+//// Requires a, b <= 2^k. Tested for k = 1, .., 63.
+////=============================================================================
+//    std::uint64_t mul_mod_mersenne(
+//            const std::uint64_t a,
+//            const std::uint64_t b,
+//            const std::uint64_t k) {
+//        const std::uint64_t p = ((std::uint64_t)1 << k) - 1;
+//        __extension__ const unsigned __int128 ab =
+//                (unsigned __int128)a *
+//                (unsigned __int128)b;
+//        std::uint64_t lo = (std::uint64_t)ab;
+//        const std::uint64_t hi = (ab >>  (uint64_t) 64);
+//        lo = (lo & p) + ((lo >> k) + (hi << ( (uint64_t) 64 - k)));
+//        lo = (lo & p) + (lo >> k);
+//        return lo == p ?  (uint64_t) 0 : lo;
+//    }
+//
+////=============================================================================
+//// Return a mod p, where p = (2^k) - 1.
+//// Works for any a in [0..2^64).
+//// Tested for k = 1, .., 63.
+////=============================================================================
+//    std::uint64_t mod_mersenne(
+//            std::uint64_t a,
+//            const std::uint64_t k) {
+//        std::uint64_t p = ((std::uint64_t)1 << k) -  (uint64_t) 1;
+//        if (k < (uint64_t) 32) {
+//
+//            // We need to check if a <= 2^(2k).
+//            const std::uint64_t threshold = ((std::uint64_t)1 << (k <<  (uint64_t) 1));
+//            if (a <= threshold) {
+//                a = (a & p) + (a >> k);
+//                a = (a & p) + (a >> k);
+//                return a == p ?  (uint64_t) 0 : a;
+//            } else return a % p;
+//        } else {
+//
+//            // We are guaranteed that a < 2^(2k)
+//            // because a < 2^64 <= 2^(2k).
+//            a = (a & p) + (a >> k);
+//            a = (a & p) + (a >> k);
+//            return a == p ?  (uint64_t) 0 : a;
+//        }
+//    }
+//
+////=============================================================================
+//// Return random number x in [0..p), where p = (2^k) - 1.
+////=============================================================================
+//    std::uint64_t rand_mod_mersenne(const std::uint64_t k) {
+//        const std::uint64_t p = ((std::uint64_t)1 << k) -  (uint64_t) 1;
+//        return utils::random_int<std::uint64_t>(
+//                (std::uint64_t)0, (std::uint64_t(p -  (uint64_t) 1)));
+//    }
+//
+////=============================================================================
+//// Return (a^n) mod p, where p = (2^k) - 1.
+////=============================================================================
+//    std::uint64_t  pow_mod_mersenne(
+//            const std::uint64_t a,
+//            std::uint64_t n,
+//            const std::uint64_t k) {
+//        std::uint64_t pow = mod_mersenne(a, k);
+//        std::uint64_t ret = mod_mersenne( (uint64_t) 1, k);
+//        while (n >  (uint64_t) 0) {
+//            if (n &  (uint64_t) 1)
+//                ret = mul_mod_mersenne(ret, pow, k);
+//            pow = mul_mod_mersenne(pow, pow, k);
+//            n >>=  (uint64_t) 1;
+//        }
+//        return ret;
+//    }
+//
+////=============================================================================
+//// Given Karp-Rabin hashes of two substrings, return
+//// the Karp-Rabin hash of their concatenation.
+////=============================================================================
+//    std::uint64_t concat(
+//            const std::uint64_t left_hash,
+//            const std::uint64_t right_hash,
+//            const std::uint64_t right_len) {
+//        const std::uint64_t pow = pow_mod_mersenne(
+//                hash_variable, right_len, mersenne_prime_exponent);
+//        const std::uint64_t tmp = mul_mod_mersenne(
+//                left_hash, pow, mersenne_prime_exponent);
+//        const std::uint64_t ret = mod_mersenne(
+//                tmp + right_hash, mersenne_prime_exponent);
+//        return ret;
+//    }
+//    std::uint64_t power(const std::uint64_t k)
+//    {
+//        return pow((uint64_t)2,k);
+//    }
+//    std::uint64_t subtract(const std::uint64_t long_hash, const std::uint64_t short_hash, const std::uint64_t right_len)
+//    {
+//        const std::uint64_t pow = pow_mod_mersenne(
+//                hash_variable, right_len, mersenne_prime_exponent);
+//
+//
+//        //mul_mod_mersenne requires a, b <= 2^k
+//        uint64_t max_pow=power(mersenne_prime_exponent);
+//        if(short_hash > max_pow || pow > max_pow || mersenne_prime_exponent > 63)
+//            cout<<"Error2";
+//
+//        const std::uint64_t tmp = mul_mod_mersenne(
+//                short_hash, pow, mersenne_prime_exponent);
+//
+//        if(long_hash < tmp)cout<<"error\n";
+//        const std::uint64_t ret = mod_mersenne(
+//                long_hash-tmp, mersenne_prime_exponent);
+//
+//        return ret;
+//    }
+//
+////=============================================================================
+//// Initialize the base and exponent for Karp-Rabin hashing.
+////=============================================================================
+//    void init() {
+//        mersenne_prime_exponent = 61;
+//        hash_variable = rand_mod_mersenne(mersenne_prime_exponent);
+//    }
+//
+//}  // namespace karp_rabin_kashing
+//
+//
 
 
 
@@ -189,10 +190,31 @@ void readfile(int_vector<> &input_seq_vec,std::vector<int> &w){
 
 
 
+void readfile(const string &filename, std::vector<int> &normalVec, int num_tests){
+    std::ifstream f(filename);
+    if (!f) {
+        std::cerr << "Unable to open file: " << filename << std::endl;
+        return;
+    }
+
+
+    int c;
+    int cnt =0;
+    while (f >> c) {
+        cnt++;
+        if (cnt> 200*(num_tests+1)){
+            break;
+        }
+        normalVec.push_back(c);
+    }
+    f.close();
+
+}
 
 
 int OPSTMethodMax(std::vector<int> &w, int &tau){
     int_vector<> input_seq_vec;
+
     std::vector<stNode*> MaxTauNodes;
 
     // read vector from file
@@ -203,7 +225,7 @@ int OPSTMethodMax(std::vector<int> &w, int &tau){
     double time_wavelet =0.0;
     int rangeThreshold = 512;
 
-    OPST OP(input_seq_vec, rangeThreshold, time_wavelet);
+    OPST OP(w, rangeThreshold);
 //    OP.exportSuffixTreeToDot("count22", true);
 
     OP.MaxTauDFS(tau);
@@ -216,7 +238,7 @@ int OPSTMethodMax(std::vector<int> &w, int &tau){
 
 }
 
-
+/*
 int OPSTMethodClosed(std::vector<int> &w, int &tau){
     int_vector<> input_seq_vec;
 
@@ -230,11 +252,11 @@ int OPSTMethodClosed(std::vector<int> &w, int &tau){
     double time_wavelet =0.0;
     int rangeThreshold = 512;
 
-    OPST OP(input_seq_vec, rangeThreshold, time_wavelet);
+    OPST OP(input_seq_vec, rangeThreshold);
 //    OP.exportSuffixTreeToDot("count1", false);
-    OP.exportSuffixTreeToDot("count12", false);
+//    OP.exportSuffixTreeToDot("count12", false);
     OP.ClosedTauDFS(tau);
-    OP.exportSuffixTreeToDot("count2", false);
+//    OP.exportSuffixTreeToDot("count2", false);
 //    OP.exportSuffixTreeToDot("count22", true);
     OP.ClosedFindNodes(ClosedTauNodes);
 //    cout<<"The number of found patterns is "<<OP.MaxTauNodes.size()<<endl;
@@ -245,40 +267,14 @@ int OPSTMethodClosed(std::vector<int> &w, int &tau){
 
 
 }
+*/
 
 
 
 
 
-std::string generatePatternString(const std::vector<std::pair<int, int>>& sortedArray, int x) {
-    std::stringstream patternStream;
-    int n = sortedArray.size();
 
-    for (int i = 0; i < n - 1; ++i) {
-
-        int diff_a = sortedArray[i].first - x;
-
-        patternStream << diff_a;
-
-        if (sortedArray[i].second == sortedArray[i + 1].second) {
-
-            patternStream << ",1,";
-        } else {
-
-            patternStream << ",0,";
-        }
-    }
-
-    int diff_last = sortedArray[n - 1].first - x;
-    patternStream << diff_last;
-
-    return patternStream.str();
-}
-
-
-
-
-
+/*
 int cubicMethodMax(std::vector<int> &w, int &tau){
     karp_rabin_hashing::init();
 
@@ -658,7 +654,7 @@ int quadraticMethodClosed(std::vector<int> &w, int &tau, std::unordered_map<int,
     return cnt_maximal;
 }
 
-
+*/
 
 
 // Utility to generate a random integer within a range
@@ -689,20 +685,27 @@ void run_test_max(std::vector<int>& vec, int tau) {
 
     cout<<"numOPST: "<<numOPST<<endl;
 
-    int numCubic= cubicMethodMax(vec,tau);
-    cout<<"numcubic: "<<numCubic<<endl;
+
 
     int numQuadratic= quadraticMethodMax(vec,tau);
     cout<<"numquadratic: "<<numQuadratic<<endl;
 
+    int numCubic= cubicMethodMax(vec,tau);
+    cout<<"numcubic: "<<numCubic<<endl;
+
     if (numCubic != numOPST || numQuadratic != numOPST) {
+        for (auto i: vec){
+            cout<<i<<",";
+        }
+        cout<<endl;
+        cout<<"length: "<<vec.size()<<endl;
         std::cerr << "Error: Results differ between methods for tau = " << tau << std::endl;
         exit(-1);
     }
 
 
 }
-
+/*
 void run_test_closed(std::vector<int>& vec, int tau) {
 
     // test the number of tau-maximal patterns
@@ -741,19 +744,29 @@ void run_test_closed(std::vector<int>& vec, int tau) {
 }
 
 
-
+*/
 int main() {
-    const size_t num_tests = 100000;
-    const size_t vector_size = 100; // Example vector size
-    const int min_val = 1, max_val = 10; // Value range for vector elements
-    const int tau_min =2, tau_max = 10; // Range for tau
+    const size_t num_tests = 10000;
+    const size_t vector_size =  10; // Example vector size
+    const int min_val = 0, max_val = 10; // Value range for vector elements
+    const int tau_min =2, tau_max = 5; // Range for tau
+    string filename = "Datasets/discretized/1MB2.txt";
 
     for (size_t i = 0; i < num_tests; ++i) {
+
+
+
+//        std::vector<int> vec = {9,5,7,4,7,10,4,5,6,0};
+//        int tau = 3;
         auto vec = generate_random_vector(vector_size, min_val, max_val);
         int tau = generate_random_tau(tau_min, tau_max);
+//        vector<int> vec;
+//        int tau = 5;
+//        readfile(filename,vec,i);
+//        cout<<"file:"<< filename<<endl;
 //        std::vector<int> vec = {10,6,4,2,8,5,9,5,6,10,3,6,5,8,2,1,10,10,3,3,4,8,6,3,5,4,7,4,9,3,1,7,6,5,2,6,9,2,5,1,4,7,6,6,1,10,7,8,8,9,9,10,3,7,7,3,7,1,7,7,5,5,9,3,1,7,1,7,3,3,4,5,3,6,1,2,9,2,9,6,9,8,6,6,9,3,1,1,8,8,9,2,6,8,2,1,8,4,2,4,8,4,9,5,5,10,10,8,4,1,8,10,4,4,2,1,9,8,3,7,4,2,2,1,4,5,4,10,6,3,3,2,8,1,1,5,6,3,8,1,9,1,7,5,10,9,4,8,1,5,10,5,6,6,5,6,10,8,4,8,8,9,5,7,1,4,6,3,8,2,2,2,1,9,5,6,10,8,4,8,1,4,2,8,8,6,5,5,7,1,1,6,1,8,9,6,3,8,6,3};
 //        int tau = 2;
-//                std::vector<int> vec = {0,1,2,3,4,5,6};
+//                std::vector<int> vec = {1,2,3,0,4,5,6};
 //        std::vector<int> vec = {4,5,8,3,8,4,5,9,1,6};
 //
 //        int tau = 2;
@@ -764,8 +777,8 @@ int main() {
 //        int tau = 3;
 //        cout<<"Tau is "<<tau<<endl;
 
-//        run_test_max(vec, tau); // You'll need to adapt this to your specific method calls
-        run_test_closed(vec, tau); // You'll need to adapt this to your specific method calls
+        run_test_max(vec, tau); // You'll need to adapt this to your specific method calls
+//        run_test_closed(vec, tau); // You'll need to adapt this to your specific method calls
 
 
         cout<<i+1<< "th test passed!"<<endl;

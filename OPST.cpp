@@ -168,13 +168,20 @@ pair<int, int> OPST:: LastCode(int a , int b){
 
     if ( b -a < rangeThreshold) {
 
-        if (b > this->n - 1) {
-            b = this->n - 1;
-        }
+
         int predecessor_local = predecessorNV(a, b);
 
 
-        int successor_local = (int) (w[predecessor_local] == w[b]);
+        int successor_local;
+
+        //if predecessor_local is -1, successor is set to notEqual(0)
+        if(predecessor_local<0){
+            successor_local = 0;
+        } else{
+
+            successor_local = (int) (w[predecessor_local] == w[b]);
+
+        }
 
         if (predecessor_local != NA) {
             predecessor_local = predecessor_local - a;
@@ -207,7 +214,17 @@ pair<int, int> OPST:: LastCode(int a , int b){
 
         int predecessor_local = predecessorWT(wt.root(), a-1, b-1);
 
-        int successor_local = (int) (w[predecessor_local] == w[b]);
+        int successor_local;
+
+        //if predecessor_local is -1, successor is set to notEqual(0)
+
+        if(predecessor_local<0){
+            successor_local = 0;
+        } else{
+
+            successor_local = (int) (w[predecessor_local] == w[b]);
+
+        }
 
         if (predecessor_local != NA){
             predecessor_local = predecessor_local - a;
