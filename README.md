@@ -11,7 +11,6 @@ Before compiling and running, please install [sdsl](https://github.com/simongog/
 ./run.sh
 ```
 
-It will run on ecg_1_to_40.txt_merged20.txt ~ ecg_1_to_40.txt_merged100.txt, correpsonding to 20 to 100 MB files. 
 
 
 
@@ -61,7 +60,7 @@ Pattern found at interval: [2, 4]
 
 
 ## Datasets
-We uploaded the datasets to [Google Drive](https://drive.google.com/file/d/1eAJr_UHhCpWPiZ_a-rC9WOwWO3Rf3txp/view).
+We uploaded the datasets to [Google Drive]().
 
 
 ## Tips
