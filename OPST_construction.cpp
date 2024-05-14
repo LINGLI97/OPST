@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 
 
     cmdline::parser parser;
-    parser.add<string>("filepath", 'f', "the path to input file", false, "discretization.txt_discretized");
+    parser.add<string>("filepath", 'f', "the path to input file", false, "sample.txt");
 
     parser.add<int>("rangeThreshold", 'r', "the range of (a,b) determines call the naive or wavelet tree method", false, 512);
     parser.add<bool>("printPattern", 'p', "Print out the pattern or not", false, false);
