@@ -11,7 +11,7 @@ Before compiling and running, please install [sdsl](https://github.com/simongog/
 make all
 ```
 
-Consider w = 1 2 4 4 2 5 5 1 as the input  in the sample.txt, we can run the method as below:
+Consider w = 1 2 4 4 2 5 5 1 as the input  in the sample.txt, we can run the methods as below:
 ```bash 
 #index construction
 ./OPSTConstruction -f sample.txt
