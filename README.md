@@ -32,48 +32,48 @@ For MOPP, please refer to [this github](https://github.com/wuc567/Pattern-Mining
 
 ## Print Out Information
 
---------------------------------------------Information Board--------------------------------------------------------
-Enabling baseline - Maximal patterns mining: 
-Processing sample.txt
-Tau is set as 2.
-The max length of patterns: 3
-The input size: 8
-Runtime used for mining 2-maximal order-preserving 2-frequent patterns: 9.8e-05 s.
-The number of found maximal patterns is 2
+--------------------------------------------Information Board--------------------------------------------------------  
+Enabling baseline - Maximal patterns mining:   
+Processing sample.txt  
+Tau is set as 2.  
+The max length of patterns: 3  
+The input size: 8  
+Runtime used for mining 2-maximal order-preserving 2-frequent patterns: 9.8e-05 s.  
+The number of found maximal patterns is 2  
 
---------------------------------------------Information Board--------------------------------------------------------
-Enabling  baseline - Closed patterns mining: 
-Processing sample.txt
-Tau is set as 2.
-The max length of patterns: 3
-The input size: 8
-Runtime used for mining 2-closed order-preserving 2-frequent patterns: 0.000126 s.
-The number of found closed patterns is 4
+--------------------------------------------Information Board--------------------------------------------------------  
+Enabling  baseline - Closed patterns mining:   
+Processing sample.txt  
+Tau is set as 2.  
+The max length of patterns: 3  
+The input size: 8  
+Runtime used for mining 2-closed order-preserving 2-frequent patterns: 0.000126 s.  
+The number of found closed patterns is 4  
 
---------------------------------------------Information Board--------------------------------------------------------
-Enabling OPST maximal method
-Processing sample.txt
-Tau is set as 2.
-The input size: 8
-Terminate_label (2 * n + 1) $ = 17
-Runtime only for OPST construction  = 9.7e-05 s.
-Runtime only used for mining 2-maximal order-preserving 2-frequent patterns: 1.9e-05 s.
-The number of found maximal patterns is 2
-Total runtime for OPST construction and Maximal patterns mining : 0.000116 s.
-The max length of patterns:3
+--------------------------------------------Information Board--------------------------------------------------------  
+Enabling OPST maximal method  
+Processing sample.txt  
+Tau is set as 2.  
+The input size: 8  
+Terminate_label (2 * n + 1) $ = 17  
+Runtime only for OPST construction  = 9.7e-05 s.  
+Runtime only used for mining 2-maximal order-preserving 2-frequent patterns: 1.9e-05 s.  
+The number of found maximal patterns is 2  
+Total runtime for OPST construction and Maximal patterns mining : 0.000116 s.  
+The max length of patterns:3  
 
---------------------------------------------Information Board--------------------------------------------------------
-Enabling OPST closed method
-Processing sample.txt
-Tau is set as 2.
-The input size: 8
-Terminate_label (2 * n + 1) $ = 17
-Runtime only for OPST construction  = 0.000157 s.
-Runtime only used for mining  2-closed time1 order-preserving 2-frequent patterns: 2e-05 s.
-Runtime only used for mining 2-closed order-preserving 2-frequent patterns: 3.4e-05 s.
-The number of found closed patterns is 4
-Total runtime for OPST construction and Closed patterns mining : 0.000191 s.
-The max length of patterns:3
+--------------------------------------------Information Board--------------------------------------------------------  
+Enabling OPST closed method  
+Processing sample.txt  
+Tau is set as 2.  
+The input size: 8  
+Terminate_label (2 * n + 1) $ = 17  
+Runtime only for OPST construction  = 0.000157 s.  
+Runtime only used for mining  2-closed time1 order-preserving 2-frequent patterns: 2e-05 s.  
+Runtime only used for mining 2-closed order-preserving 2-frequent patterns: 3.4e-05 s.  
+The number of found closed patterns is 4  
+Total runtime for OPST construction and Closed patterns mining : 0.000191 s.  
+The max length of patterns:3  
 
 
 ## Datasets
