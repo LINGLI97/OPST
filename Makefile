@@ -8,6 +8,12 @@ LDFLAGS = -L ./libsdsl/lib/
 LIBS = -lsdsl -ldivsufsort -ldivsufsort64
 
 
+
+
+
+
+# OPST construction
+
 ConstructionSOURCES = OPST_construction.cpp node.cpp OPST.cpp utils.cpp
 ConstructionOBJECTS = $(ConstructionSOURCES:.cpp=.o)
 ConstructionTARGET = OPSTConstruction
