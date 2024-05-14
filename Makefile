@@ -1,8 +1,6 @@
 # Makefile
 CXX = g++
-CXXFLAGS = -std=c++17
-
-#-I ./libsdsl/include/ -msse3 -O3 -fomit-frame-pointer -funroll-loops
+CXXFLAGS = -std=c++17 -I ./libsdsl/include/ -msse3 -O3 -fomit-frame-pointer -funroll-loops
 #-DVISUALIZATION
 
 

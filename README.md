@@ -7,91 +7,74 @@ Before compiling and running, please install [sdsl](https://github.com/simongog/
 
 ## Compile and run
 
-```bash 
-./run.sh
+```
+make all
 ```
 
-
-
-
-You can easily specify parameters, for example:
-
+Consider w = 1 2 4 4 2 5 5 1as the input  in the sample.txt, we can run the method as below:
 ```bash 
-./my_program --filepath=ecg_1_to_40.txt_discretized --OPST=1 --MaximalQuadratic=1 --ClosedQuadratic=1 --MaximalCubic=1 --ClosedCubic=1 --tau=2 --printPattern=0
+#index construction
+./OPSTConstruction -f sample.txt
+
+#mining maximal OP patterns
+./OPSTMaximal -f sample.txt -t 2
+./BAMP -f sample.txt -t 2
+
+#mining closed OP patterns
+./OPSTClosed -f sample.txt -t 2
+./BACP -f sample.txt -t 2
 ```
 
-The `-f` /`--filepath` option determines the file path;   
-The `--OPST` option determines whether to enable maximal and closed patterns mining of OPST; the defalut value is true;  
-The `--MaximalQuadratic` option determines whether to enable maximal patterns mining of the quadratic baseline; the defalut value is false;  
-The `--ClosedQuadratic` option determines whether to enable closed patterns mining of the quadratic baseline; the defalut value is false;  
-The `--MaximalCubic` option determines whether to enable maximal patterns mining of the cubic baseline; the defalut value is false;  
-The `--ClosedCubic` option determines whether to enable closed patterns mining of the cubic baseline; the defalut value is false;  
+The `-f` option determines the file path;   
+The `-t` option determines the value of minimal support, tau > 1. 
 
-The `-t`/`--tau` option determines the value of minimal support, tau > 1. The default value is 512;  
-The `-p`/`--printPattern` option determines whether to print the all found maximal patterns. The default value is false.
-
-
+For MOPP, please refer to [this github](https://github.com/wuc567/Pattern-Mining/tree/master/OPP-Miner).
 
 ## Print Out Information
 
-Suffix tree is constructed based on w = 12442551   
---------------------------------------------Information Board--------------------------------------------------------  
-Sigma of input = 4  
-n = 8  
-Terminate_label $ = 91  
-The number of middle_implicit_ma x appeared: 1  
-In succinct log mode.  
-Using std::unordered_map  
-Not using safe check  
-Tau is set as 2.  
-If the range of LastCode input (a, b) , namely b - a < 512, it utilizes the naive way to compute (p(w), s(w)).  
-Runtime for wavelet tree construction = 0.009 s.  
-Runtime for suffix tree construction = 0 s.  
-Total runtime for wavelet tree and suffix tree construction = 0.009 s.  
-Runtime used for find 2-maximal order-preserving 2-frequent patterns: 0 s.  
-The number of found patterns is 2  
-Pattern found at interval: [1, 3]  
-Pattern found at interval: [2, 4]  
+--------------------------------------------Information Board--------------------------------------------------------
+Enabling baseline - Maximal patterns mining: 
+Processing sample.txt
+Tau is set as 2.
+The max length of patterns: 3
+The input size: 8
+Runtime used for mining 2-maximal order-preserving 2-frequent patterns: 9.8e-05 s.
+The number of found maximal patterns is 2
 
+--------------------------------------------Information Board--------------------------------------------------------
+Enabling  baseline - Closed patterns mining: 
+Processing sample.txt
+Tau is set as 2.
+The max length of patterns: 3
+The input size: 8
+Runtime used for mining 2-closed order-preserving 2-frequent patterns: 0.000126 s.
+The number of found closed patterns is 4
 
+--------------------------------------------Information Board--------------------------------------------------------
+Enabling OPST maximal method
+Processing sample.txt
+Tau is set as 2.
+The input size: 8
+Terminate_label (2 * n + 1) $ = 17
+Runtime only for OPST construction  = 9.7e-05 s.
+Runtime only used for mining 2-maximal order-preserving 2-frequent patterns: 1.9e-05 s.
+The number of found maximal patterns is 2
+Total runtime for OPST construction and Maximal patterns mining : 0.000116 s.
+The max length of patterns:3
 
-
-
+--------------------------------------------Information Board--------------------------------------------------------
+Enabling OPST closed method
+Processing sample.txt
+Tau is set as 2.
+The input size: 8
+Terminate_label (2 * n + 1) $ = 17
+Runtime only for OPST construction  = 0.000157 s.
+Runtime only used for mining  2-closed time1 order-preserving 2-frequent patterns: 2e-05 s.
+Runtime only used for mining 2-closed order-preserving 2-frequent patterns: 3.4e-05 s.
+The number of found closed patterns is 4
+Total runtime for OPST construction and Closed patterns mining : 0.000191 s.
+The max length of patterns:3
 
 
 ## Datasets
 We uploaded the datasets to [Google Drive]().
-
-
-## Tips
-We can print the detailed information by setting:
-```cpp
--DVERBOSE
-```
-We do some safe checks by setting:
-```cpp
--DCHECK
-```
-
-We can visulize the suffix tree via Graphviz by setting:
-```cpp
--VISUALIZATION
-```
-and then 
-```bash 
-dot -Tpdf pic_nosufL -o suffix_tree_nosuf.pdf  
-dot -Tpdf pic_sufL -o suffix_tree_suf.pdf
-```
-
-
-
-Using unordered_dense from [here](https://github.com/martinus/unordered_dense/tree/main) by setting the following flag. Otherwise, it will utilize std::unordered_map.
-```cpp
--DUNORDERED_DENSE
-```
-
-
-The time curve with increasing the file size from 1MB to 20MB:
-
-![time](./timevsSize.jpg)
-
