@@ -43,17 +43,17 @@ std::string get_filename(const std::string& path) {
 }
 
 std::string get_grandparent_directory(const std::string& path) {
-    // 找到最后一个斜杠的位置
+
     size_t last_slash_idx = path.find_last_of("/\\");
     if (last_slash_idx == std::string::npos) {
-        return "";  // 没有斜杠，没有上级目录
+        return ""; 
     }
-    // 获取去掉最后一个斜杠后的子串，并再次寻找斜杠
+    
     size_t second_last_slash_idx = path.substr(0, last_slash_idx).find_last_of("/\\");
     if (second_last_slash_idx == std::string::npos) {
-        return "";  // 只有一个斜杠，没有上级的上级目录
+        return "";  
     }
-    return path.substr(0, second_last_slash_idx);  // 返回第二个最后斜杠之前的部分
+    return path.substr(0, second_last_slash_idx); 
 }
 
 
