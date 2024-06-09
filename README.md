@@ -10,15 +10,18 @@ Before compiling and running, please install [sdsl](https://github.com/simongog/
 make all
 ```
 Consider w = 1 2 4 4 2 5 5 1 as the input  in the sample.txt, we can run the methods as below:
+*index construction
 ```bash 
-#index construction
 ./OPSTConstruction -f sample.txt
-
-#mining maximal OP patterns
+```
+*mining maximal OP patterns
+```bash 
 ./OPSTMaximal -f sample.txt -t 2
 ./BAMP -f sample.txt -t 2
 
-#mining closed OP patterns
+```
+*mining closed OP patterns
+```bash 
 ./OPSTClosed -f sample.txt -t 2
 ./BACP -f sample.txt -t 2
 ```
