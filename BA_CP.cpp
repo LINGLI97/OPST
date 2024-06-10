@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
     double time_quadratic = std::chrono::duration_cast < std::chrono::microseconds > (quadratic_end - quadratic_start).count() * 0.000001;
     cout<<"The input size: "<<input_vec.size()<<endl;
 
-    cout<<"Runtime used for mining "<<tau<<"-closed order-preserving "<<tau<<"-frequent patterns: "<<time_quadratic<<" s."<<endl;
+    cout<<"Runtime used for mining closed order-preserving "<<tau<<"-frequent patterns: "<<time_quadratic<<" s."<<endl;
     cout<<"The number of found closed patterns is "<<numQuadratic<<endl;
     cout<<"---------------------------------------------------------------------------------------------------------------------"<<endl;
 

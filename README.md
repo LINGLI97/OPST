@@ -68,8 +68,7 @@ Tau is set as 2.
 The input size: 8  
 Terminate_label (2 * n + 1) $ = 17  
 Runtime only for OPST construction  = 0.000157 s.  
-Runtime only used for mining  2-closed time1 order-preserving 2-frequent patterns: 2e-05 s.  
-Runtime only used for mining 2-closed order-preserving 2-frequent patterns: 3.4e-05 s.  
+Runtime only used for mining closed order-preserving 2-frequent patterns: 3.4e-05 s.  
 The number of found closed patterns is 4  
 Total runtime for OPST construction and Closed patterns mining : 0.000191 s.  
 The max length of patterns:3  
@@ -80,7 +79,7 @@ Processing sample.txt
 Tau is set as 2.  
 The max length of patterns: 3  
 The input size: 8  
-Runtime used for mining 2-closed order-preserving 2-frequent patterns: 0.000126 s.  
+Runtime used for mining closed order-preserving 2-frequent patterns: 0.000126 s.  
 The number of found closed patterns is 4  
 
 

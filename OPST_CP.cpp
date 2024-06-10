@@ -153,9 +153,9 @@ int main(int argc, char *argv[])
     cout<<"Terminate_label (2 * n + 1) $ = " << OP.terminate_label<<endl;
 
     cout<<"Runtime only for OPST construction  = "<<time_Construction<<" s."<<endl;
-    cout<<"Runtime only used for mining  "<<tau<<"-closed time1 order-preserving "<<tau<<"-frequent patterns: "<<time_Closed1<<" s."<<endl;
+ 
 
-    cout<<"Runtime only used for mining "<<tau<<"-closed order-preserving "<<tau<<"-frequent patterns: "<<time_Closed<<" s."<<endl;
+    cout<<"Runtime only used for mining closed order-preserving "<<tau<<"-frequent patterns: "<<time_Closed<<" s."<<endl;
     cout<<"The number of found closed patterns is "<<ClosedTauNodes.size()<<endl;
 
     cout<<"Total runtime for OPST construction and Closed patterns mining : "<<time_Construction+time_Closed<<" s."<<endl;
