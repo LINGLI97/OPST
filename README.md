@@ -50,7 +50,7 @@ Runtime only for OPST construction  = 9.7e-05 s.
 Runtime only used for mining 2-maximal order-preserving 2-frequent patterns: 1.9e-05 s.  
 The number of found maximal patterns is 2  
 Total runtime for OPST construction and Maximal patterns mining : 0.000116 s.  
-The max length of patterns:3   
+The max length of patterns: 3   
 
 --------------------------------------------Information Board--------------------------------------------------------  
 Enabling baseline - Maximal patterns mining:   
@@ -58,7 +58,7 @@ Processing sample.txt
 Tau is set as 2.  
 The max length of patterns: 3  
 The input size: 8  
-Runtime used for mining 2-maximal order-preserving 2-frequent patterns: 0.000146 s. 
+Runtime used for mining 2-maximal order-preserving 2-frequent patterns: 0.000146 s.  
 The number of found maximal patterns is 2  
 
 --------------------------------------------Information Board--------------------------------------------------------  
@@ -71,7 +71,7 @@ Runtime only for OPST construction  = 0.000157 s.
 Runtime only used for mining closed order-preserving 2-frequent patterns: 3.4e-05 s.  
 The number of found closed patterns is 4  
 Total runtime for OPST construction and Closed patterns mining : 0.000191 s.  
-The max length of patterns:3  
+The max length of patterns: 3  
 
 --------------------------------------------Information Board--------------------------------------------------------  
 Enabling  baseline - Closed patterns mining:   
