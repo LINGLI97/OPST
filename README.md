@@ -58,7 +58,7 @@ Processing sample.txt
 Tau is set as 2.  
 The max length of patterns: 3  
 The input size: 8  
-Runtime used for mining 2-maximal order-preserving 2-frequent patterns: 9.8e-05 s.  
+Runtime used for mining 2-maximal order-preserving 2-frequent patterns: 0.000146 s. 
 The number of found maximal patterns is 2  
 
 --------------------------------------------Information Board--------------------------------------------------------  
@@ -79,7 +79,7 @@ Processing sample.txt
 Tau is set as 2.  
 The max length of patterns: 3  
 The input size: 8  
-Runtime used for mining closed order-preserving 2-frequent patterns: 0.000126 s.  
+Runtime used for mining closed order-preserving 2-frequent patterns: 0.000226 s.  
 The number of found closed patterns is 4  
 
 
