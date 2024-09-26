@@ -18,7 +18,6 @@ Consider w = 1 2 4 4 2 5 5 1 as the input  in the sample.txt, we can run the met
 ```bash 
 ./OPSTMaximal -f sample.txt -t 2
 ./BAMP -f sample.txt -t 2
-
 ```
 * mining closed OP patterns
 ```bash 
@@ -29,7 +28,6 @@ Consider w = 1 2 4 4 2 5 5 1 as the input  in the sample.txt, we can run the met
 The `-f` option determines the file path;   
 The `-t` option determines the value of minimal support, tau > 1. 
 
-For MOPP, please refer to [this github](https://github.com/wuc567/Pattern-Mining/tree/master/OPP-Miner).
 
 ## Print Out Information
 
@@ -85,7 +83,6 @@ The number of found closed patterns is 4
 
 ## Datasets
 The preprocessed datasets are available at [Google Drive](https://drive.google.com/file/d/1gcWFnSrMis6G15vgxjowHwjN2_aLXOlY/view?usp=sharing).
-
 
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
