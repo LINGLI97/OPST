@@ -82,7 +82,7 @@ The number of found closed patterns is 4
 
 
 ## Datasets
-The preprocessed datasets are available at [Google Drive](https://drive.google.com/file/d/1gcWFnSrMis6G15vgxjowHwjN2_aLXOlY/view?usp=sharing).
+The preprocessed datasets are available at [Google Drive]([https://drive.google.com/file/d/1gcWFnSrMis6G15vgxjowHwjN2_aLXOlY/view?usp=sharing](https://drive.google.com/file/d/1hZTRM8_HxBo4QJLv3fkr2L2ZBxjwVYyT/view?usp=sharing)).
 
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
